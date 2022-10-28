@@ -1,4 +1,4 @@
 package es.pentagono;
 
-public interface Task {
+public class Metadata {
 }
