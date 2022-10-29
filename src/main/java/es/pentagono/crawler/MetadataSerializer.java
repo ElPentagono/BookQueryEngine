@@ -1,5 +1,4 @@
 package es.pentagono.crawler;
-
 import es.pentagono.Metadata;
 
 public interface MetadataSerializer {
