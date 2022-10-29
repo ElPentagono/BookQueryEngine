@@ -25,7 +25,7 @@ public class ItemParserTest {
     }
 
     @Test
-    public void name() {
+    public void testItemValues() {
         InputStream is = getInputStream("bookExample.txt");
         BufferedReader reader = getBufferedReader(is);
         Item result = itemParser.parse("123", reader.lines().collect(Collectors.joining("\n")));

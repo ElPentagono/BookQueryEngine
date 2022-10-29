@@ -1,7 +1,7 @@
 package es.pentagono.crawler;
 
-import es.pentagono.Document;
+import java.io.IOException;
 
 public interface BookReader {
-    Document read(int id);
+    Item read(int id) throws IOException;
 }

@@ -23,7 +23,7 @@ public class GutenbergBookParser implements ItemParser {
         Map<String, String> metadata = new HashMap<>();
         for (String metadataField : new String[]{"Title", "Author", "Language"}) {
             metadata.put(metadataField.toLowerCase(),
-                getMetadataFieldFromPattern(book, Pattern.compile(metadataField + "(.+[\n])+")));
+                getMetadataFieldFromPattern(book, Pattern.compile(metadataField + "(.+[\r\n])+")));
         }
         metadata.put("releaseDate",
             getMetadataFieldFromPattern(book, Pattern.compile("Release Date.+?(?=(\\[.*]))", Pattern.DOTALL)));
@@ -41,7 +41,7 @@ public class GutenbergBookParser implements ItemParser {
         Matcher matcherEnd = getMatcherFromPattern("\\*\\*\\* END OF THE PROJECT GUTENBERG .* \\*\\*\\*", book);
         return book.substring(
             ((!matcherStart.find()) ? -1 : matcherStart.end()),
-            ((!matcherEnd.find()) ? -1 : matcherEnd.start())
+            ((!matcherEnd.find()) ? book.length() : matcherEnd.start())
         );
     }
 
