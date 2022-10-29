@@ -12,4 +12,8 @@ public class StoreTest {
                 "1851",
                 "1851")));
     }
+
+    @Test
+    public void store_test() {
+    }
 }
