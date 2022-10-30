@@ -1,5 +1,5 @@
-import es.pentagono.crawler.Item;
-import es.pentagono.crawler.ItemParser;
+import es.pentagono.crawler.DownloadEvent;
+import es.pentagono.crawler.EventParser;
 import es.pentagono.crawler.parsers.GutenbergBookParser;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -10,25 +10,27 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
-public class ItemParserTest {
+public class EventParserTest {
 
-    private final ItemParser itemParser;
+    private final EventParser eventParser;
 
-    public ItemParserTest(ItemParser itemParser) {
-        this.itemParser = itemParser;
+    public EventParserTest(EventParser eventParser) {
+        this.eventParser = eventParser;
     }
 
     @Test
     public void testItemValues() {
         InputStream is = getInputStream("bookExample.txt");
         BufferedReader reader = getBufferedReader(is);
-        Item result = itemParser.parse("123", reader.lines().collect(Collectors.joining("\n")));
+        DownloadEvent result = (DownloadEvent) eventParser.parse("123", reader.lines().collect(Collectors.joining("\n")));
         assertThat(result.content).isEqualTo(getExpectedContent());
         assertThat(result.metadata).isEqualTo(getExpectedMetadata());
         assertThat(result.source).isEqualTo("123");
@@ -46,25 +48,23 @@ public class ItemParserTest {
 
 
     @Parameterized.Parameters
-    public static Collection<ItemParser> implementations() {
+    public static Collection<EventParser> implementations() {
         return List.of(
             new GutenbergBookParser()
         );
     }
 
-    private String getExpectedMetadata() {
-        return "{\"releaseDate\":\" October 26, 2022\",\"author\":\" Christian David Ginsburg\",\"language\":\" English\",\"title\":\" The Kabbalah\\n       its doctrines, development, and literature\\n       its doctrines, development, and literature\"}" +
-            "";
+    private Map<String, String> getExpectedMetadata() {
+        Map<String, String> metadata = new HashMap<>();
+        metadata.put("releaseDate", "October 26, 2022");
+        metadata.put("author","Christian David Ginsburg");
+        metadata.put("language","English");
+        metadata.put("title","The Kabbalah\n       its doctrines, development, and literature\n       its doctrines, development, and literature");
+        return metadata;
     }
 
     private String getExpectedContent() {
-        return "\n" +
-            "\n" +
-            "\n" +
-            "\n" +
-            "\n" +
-            "\n" +
-            "                              THE KABBALAH\n" +
+        return "THE KABBALAH\n" +
             "\n" +
             "               Its Doctrines, Development, and Literature\n" +
             "\n" +
@@ -143,7 +143,6 @@ public class ItemParserTest {
             "Paradise, was nursed and reared by the choicest of the angelic hosts in\n" +
             "heaven, and only held converse with the holiest of man’s children upon\n" +
             "earth. Listen to the story of its birth, growth and maturity, as told\n" +
-            "by its followers.\n" +
-            "\n";
+            "by its followers.";
     }
 }

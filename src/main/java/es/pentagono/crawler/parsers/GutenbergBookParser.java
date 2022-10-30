@@ -1,38 +1,38 @@
 package es.pentagono.crawler.parsers;
 
-import com.google.gson.Gson;
-import es.pentagono.crawler.Item;
-import es.pentagono.crawler.ItemParser;
+import es.pentagono.crawler.DownloadEvent;
+import es.pentagono.crawler.EventParser;
 
+import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class GutenbergBookParser implements ItemParser {
+public class GutenbergBookParser implements EventParser {
 
     @Override
-    public Item parse(String url, String book) {
-        return new Item(url,
+    public DownloadEvent parse(String url, String book) {
+        return new DownloadEvent(url,
             getMetadataFromBook(book),
-            getContentFromBook(book)
-        );
+            getContentFromBook(book),
+            new Timestamp(System.currentTimeMillis()));
     }
 
-    private String getMetadataFromBook(String book) {
+    private Map<String, String> getMetadataFromBook(String book) {
         Map<String, String> metadata = new HashMap<>();
-        for (String metadataField : new String[]{"Title", "Author", "Language"}) {
+        for (String metadataField : new String[]{"Title", "Author", "Language"})
             metadata.put(metadataField.toLowerCase(),
                 getMetadataFieldFromPattern(book, Pattern.compile(metadataField + "(.+[\r\n])+")));
-        }
+
         metadata.put("releaseDate",
             getMetadataFieldFromPattern(book, Pattern.compile("Release Date.+?(?=(\\[.*]))", Pattern.DOTALL)));
-        return new Gson().toJson(metadata);
+        return metadata;
     }
 
     private String getMetadataFieldFromPattern(String book, Pattern pattern) {
         Matcher matcher = pattern.matcher(book);
-        return ((matcher.find()) ? book.substring(matcher.start(), matcher.end() - 1).split(":", 2)[1]
+        return ((matcher.find()) ? book.substring(matcher.start(), matcher.end() - 1).split(":", 2)[1].trim()
             : null);
     }
 
@@ -42,7 +42,7 @@ public class GutenbergBookParser implements ItemParser {
         return book.substring(
             ((!matcherStart.find()) ? -1 : matcherStart.end()),
             ((!matcherEnd.find()) ? book.length() : matcherEnd.start())
-        );
+        ).trim();
     }
 
     private Matcher getMatcherFromPattern(String regex, String book) {

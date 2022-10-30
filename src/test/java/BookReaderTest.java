@@ -1,5 +1,5 @@
 import es.pentagono.crawler.BookReader;
-import es.pentagono.crawler.Item;
+import es.pentagono.crawler.DownloadEvent;
 import es.pentagono.crawler.readers.GutenbergBookReader;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,7 +22,7 @@ public class BookReaderTest {
 
     @Test
     public void testRead() throws IOException {
-        Item result = bookReader.read(10);
+        DownloadEvent result = bookReader.read("https://www.gutenberg.org/cache/epub/10/pg10.txt");
         assertThat(result.source).isEqualTo("https://www.gutenberg.org/cache/epub/10/pg10.txt");
     }
 
