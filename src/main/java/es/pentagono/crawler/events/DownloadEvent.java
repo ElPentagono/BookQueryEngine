@@ -17,9 +17,4 @@ public class DownloadEvent implements Event {
         this.content = content;
         this.ts = ts;
     }
-
-    @Override
-    public Timestamp ts() {
-        return this.ts;
-    }
 }
