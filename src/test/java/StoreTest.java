@@ -18,7 +18,7 @@ public class StoreTest {
 
     @Test
     public void store_test() {
-        FSDocumentStore store = new FSDocumentStore(new JsonMetadataSerializer(), new FSDocumentPersister());
+        FSDocumentStore store = new FSDocumentStore(new JsonMetadataSerializer());
         store.store(new Document(
                 "1",
                 new Metadata(

@@ -11,7 +11,7 @@ import java.nio.file.Paths;
 public class FSDocumentPersister implements DocumentPersister {
     @Override
     public void persist(String id, String metadata, String content) {
-        String path = String.format("C:/Users/Jose Juan/IdeaProjects/BookQueryEngine/documents/%s", id);  // TODO
+        String path = String.format("C:/Users/juanc/IdeaProjects/BookQueryEngine/documents/%s", id);  // TODO
         createDirectory(path);
         createFile(path + "/metadata.json", metadata);
         createFile(path + "/content.txt", content);
