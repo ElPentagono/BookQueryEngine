@@ -3,7 +3,6 @@ package es.pentagono.crawler;
 import es.pentagono.crawler.readers.GutenbergBookReader;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 
 public class GutenbergSource extends Source {
 
@@ -13,7 +12,7 @@ public class GutenbergSource extends Source {
     }
 
     @Override
-    public Event readBook(int id) throws IOException {
+    public DownloadEvent readBook(int id) throws IOException {
         this.url = this.url + "/" + id + "/pg" + id + ".txt";
         return super.readBook(id);
     }
