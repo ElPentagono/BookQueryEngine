@@ -17,6 +17,7 @@ public class DownloadTask implements Task {
     public void execute() {
         try {
             DownloadEvent event = new GutenbergSource().readBook(id);
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
