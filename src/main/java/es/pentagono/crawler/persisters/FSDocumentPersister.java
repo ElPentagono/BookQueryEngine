@@ -6,39 +6,34 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class FSDocumentPersister implements DocumentPersister {
     @Override
-    public void persist(int id, String metadata, String content) {
-        String path = String.format("/BookQueryEngine/documents/%d", id);
-        createDirectory(Path.of(path));
+    public void persist(String id, String metadata, String content) {
+        String path = String.format("C:/Users/Jose Juan/IdeaProjects/BookQueryEngine/documents/%s", id);  // TODO
+        createDirectory(path);
         createMetadataFile(path, metadata);
         createContentFile(path, content);
     }
 
     private void createContentFile(String path, String content) {
-        File file = new File(path + "/content.txt");
-        createFile(content, file);
+        createFile(path + "/content.txt", content);
     }
 
     private void createMetadataFile(String path, String metadata) {
-        File file = new File(path + "/metadata.json");
-        createFile(metadata, file);
+        createFile(path + "/metadata.json", metadata);
     }
 
-    private void createDirectory(Path path) {
-        try {
-            Files.createDirectory(path);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    private void createDirectory(String path) {
+        if (!Files.exists(Paths.get(path))) new File(path).mkdirs();
     }
 
-    private static void createFile(String string, File file) {
+    private static void createFile(String file, String text) {
         try {
             FileWriter writer = new FileWriter(file);
-            writer.append(string);
+            writer.write(text);
+            writer.close();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

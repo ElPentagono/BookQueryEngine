@@ -5,6 +5,8 @@ import es.pentagono.crawler.DocumentStore;
 import es.pentagono.crawler.persisters.FSDocumentPersister;
 import es.pentagono.crawler.serializers.JsonMetadataSerializer;
 
+import java.util.UUID;
+
 public class FSDocumentStore implements DocumentStore {
     public JsonMetadataSerializer metadataSerializer;
     public FSDocumentPersister persister;
@@ -15,7 +17,9 @@ public class FSDocumentStore implements DocumentStore {
     }
 
     @Override
-    public void store(int id, Document document) {
-        persister.persist(id, metadataSerializer.serialize(document.metadata), document.content);
+    public String store(Document document) {
+        String uuid = UUID.randomUUID().toString();
+        persister.persist(document.id + "_" + uuid, metadataSerializer.serialize(document.metadata), document.content);
+        return uuid;
     }
 }

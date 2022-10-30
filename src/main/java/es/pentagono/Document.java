@@ -1,12 +1,12 @@
 package es.pentagono;
 
 public class Document {
-    public int uuid;
-    public Metadata metadata;
-    public String content;
+    public final String id;
+    public final Metadata metadata;
+    public final String content;
 
-    public Document(int uuid, Metadata metadata, String content) {
-        this.uuid = uuid;
+    public Document(String id, Metadata metadata, String content) {
+        this.id = id;
         this.metadata = metadata;
         this.content = content;
     }
