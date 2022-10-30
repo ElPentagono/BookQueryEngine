@@ -16,17 +16,17 @@ public class GutenbergTokenizer implements Tokenizer {
     public void loadStopwords() throws IOException {
         this.stopwords =  Files.readAllLines(Paths.get("stopwords/stopwords.txt"));
     }
-    public ArrayList<String> tokenize(String content) throws IOException {
-        return stopwords(Stream.of(content.toLowerCase()
-                        .replaceAll("[\t\n\\x0B\f\r\\p{Punct}]", "") //TODO quotation marks
+    @Override
+    public ArrayList<String> tokenize(String content) {
+        return Stream.of(content.toLowerCase()
+                        .replaceAll("[\t\n\\x0B\f\r\\p{Punct}]", "") // TODO quotation marks
                         .split(" "))
-                .collect(Collectors.toCollection(ArrayList<String>::new)));
+                .collect(Collectors.toCollection(ArrayList<String>::new));
     }
 
-    private ArrayList<String> stopwords(ArrayList<String> tokenizeContent) throws IOException {
+    public boolean check(String word) throws IOException {
         loadStopwords();
-        tokenizeContent.removeIf(word -> this.stopwords.contains(word));
-        return tokenizeContent;
+        return this.stopwords.contains(word);
     }
 
 

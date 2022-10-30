@@ -12,4 +12,5 @@ public class InvertedIndex {
     public List<int[]> lookup_query(String word){
         return this.index.get(word);
     }
+
 }

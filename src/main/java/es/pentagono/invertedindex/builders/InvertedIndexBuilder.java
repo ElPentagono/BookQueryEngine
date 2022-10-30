@@ -23,8 +23,9 @@ public class InvertedIndexBuilder {
 
     public void _process_document(HashMap<String, List<int[]>> invertedIndex, Document document) throws IOException {
         ArrayList<String> content = this.tokenize.tokenize(document.content);
-        for (int i = 0; i< content.size(); i++) {
-            int[] ocurrence = new int[] {document.uuid, i}; //TODO i reference wrong document
+        for (int i = 0; i<content.size() ; i++) {
+            if (this.tokenize.check(content.get(i))) continue;
+            int[] ocurrence = new int[] {document.uuid, i};
             addOcurrence(content.get(i), ocurrence, invertedIndex);
         }
     }
