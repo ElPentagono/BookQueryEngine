@@ -1,7 +1,8 @@
 package es.pentagono.crawler;
 
-import es.pentagono.Document;
+import java.io.IOException;
+import java.net.URL;
 
 public interface BookReader {
-    Document read(int id);
+    DownloadEvent read(String url) throws IOException;
 }
