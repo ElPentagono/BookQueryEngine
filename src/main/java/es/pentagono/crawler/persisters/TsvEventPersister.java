@@ -12,24 +12,33 @@ public class TsvEventPersister implements EventPersister {
     public void persist(Event event) {
         try {
             StoreEvent storeEvent = (StoreEvent) event;
-            write(storeEvent);
+            File f = new File(PATH);
+            FileWriter writer = new FileWriter(f, true);
+            initializeFile(f, writer);
+            writeEvent(writer, storeEvent);
+            writer.close();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    private void write(StoreEvent storeEvent) throws IOException {
-        FileWriter writer = new FileWriter(PATH, true);
-        if (isEmpty()) writeHeader(writer);
-        writer.write(storeEvent.ts + "\t" + storeEvent.source + "\t" + storeEvent.uuid + "\t" + storeEvent.md5 + "\n");
-        writer.close();
+    private void writeEvent(FileWriter writer, StoreEvent event) throws IOException {
+        writer.write(event.ts + "\t" + event.source + "\t" + event.uuid + "\t" + event.md5 + "\n");
+    }
+
+    private void initializeFile(File f, FileWriter fw) throws IOException {
+        if (f.exists()) return;
+        createFile(f);
+        writeHeader(fw);
+    }
+
+    private static void createFile(File f) throws IOException {
+        f.mkdirs();
+        f.createNewFile();
     }
 
     private void writeHeader(FileWriter writer) throws IOException {
         writer.write("ts\tsrc\tuuid\tmd5\n");
     }
 
-    private boolean isEmpty() {
-        return new File(PATH).length()==0;
-    }
 }

@@ -9,10 +9,12 @@ import es.pentagono.crawler.events.DownloadEvent;
 import es.pentagono.crawler.events.StoreEvent;
 import es.pentagono.invertedindex.builders.MetadataBuilder;
 
+import java.io.IOException;
 import java.math.BigInteger;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Scanner;
 
 public class DownloadTask implements Task {
 
@@ -38,20 +40,16 @@ public class DownloadTask implements Task {
             String md5 = Md5(content);
             if (alreadyStored(source, md5)) return;
             String uuid = store.store(new Document(source, builder.build(event.metadata), content));
-            persister.persist(new StoreEvent(event.ts, source, uuid, md5)); //TODO
+            persister.persist(new StoreEvent(event.ts, source, uuid, md5));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    private boolean alreadyStored(String source, String md5) {
-        Scanner sc = new Scanner(""); //TODO add path to project
-        while (sc.hasNextLine()) {
-            String[] values = sc.nextLine().trim().split("\t");
-            if (source.equals(values[1]) && md5.equals(values[3])) return true;
-        }
-        sc.close();
-        return false;
+    private boolean alreadyStored(String source, String md5) throws IOException {
+        return Files.lines(Paths.get("")) //TODO
+                .map(line -> line.split("\t"))
+                .anyMatch(row -> row[1].equals(source) && row[3].equals(md5));
     }
 
     private static String Md5(String content) throws NoSuchAlgorithmException {
