@@ -1,13 +1,7 @@
 package es.pentagono.crawler;
 
-import java.io.IOException;
+import java.util.Iterator;
 
-public abstract class Source {
-
-    protected String url;
-    protected BookReader bookReader;
-
-    public DownloadEvent readBook(int id) throws IOException {
-        return bookReader.read(url);
-    }
+public interface Source {
+    Iterator<Event> all();
 }
