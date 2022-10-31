@@ -5,37 +5,52 @@ import es.pentagono.crawler.Source;
 import es.pentagono.crawler.readers.GutenbergBookReader;
 
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.Objects;
 
 public class GutenbergSource extends Source {
 
-    private static int booksUnavaibleInARow = 0;
+    private static int unavaibleBooksCounter = 0;
+    private static int currentBookId = 0;
+    private static final int MAX_CALLS_WITHOUT_BOOKS = 20;
 
-    public GutenbergSource() {
+    public GutenbergSource(GutenbergBookReader gutenbergBookReader) {
+        super(gutenbergBookReader);
         this.url = "https://www.gutenberg.org/cache/epub";
-        this.bookReader = new GutenbergBookReader();
     }
 
-
     public DownloadEvent readBook() throws IOException {
-
-        //this.url = this.url + "/" + id + "/pg" + id + ".txt";
         DownloadEvent downloadEvent = super.readBook();
         if (bookNotFounded(downloadEvent)) return null;
+        unavaibleBooksCounter=0;
         return downloadEvent;
     }
 
+    public Iterator<String> all() {
+        return new Iterator<>() {
+            @Override
+            public boolean hasNext() {
+                return unavaibleBooksCounter < MAX_CALLS_WITHOUT_BOOKS;
+            }
 
+            @Override
+            public String next() {
+                currentBookId++;
+                try {
+                    if (Objects.equals(readBook().content, "")) unavaibleBooksCounter++;
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                return url + "/" + currentBookId + "/pg" + currentBookId + ".txt";
+            }
+        };
+    }
 
     private boolean bookNotFounded(DownloadEvent downloadEvent) {
         if (downloadEvent == null) {
-            booksUnavaibleInARow++;
+            unavaibleBooksCounter++;
             return true;
         }
         return false;
-    }
-
-    public boolean hasNext() {
-        return this.nextBookExists;
     }
 }

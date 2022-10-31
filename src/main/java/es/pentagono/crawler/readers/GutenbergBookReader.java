@@ -8,9 +8,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.safety.Whitelist;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 
-import static java.awt.BorderLayout.LINE_START;
 
 public class GutenbergBookReader implements BookReader {
 
