@@ -55,14 +55,14 @@ public class GutenbergDownloadEventParser implements EventParser {
     }
 
     private String content(String book) {
-        Matcher matcherStart = Pattern.compile("\\*\\*\\* START OF THE PROJECT GUTENBERG .*?(?=(\\*\\*\\*))", Pattern.DOTALL).matcher(book);
+        Matcher matcherStart = Pattern.compile("\\*\\*\\* START OF THE PROJECT GUTENBERG .*?\\*\\*\\*", Pattern.DOTALL).matcher(book);
         Matcher matcherEnd = Pattern.compile("\\*\\*\\* END OF THE PROJECT GUTENBERG .*?(?=(\\*\\*\\*))", Pattern.DOTALL).matcher(book);
         return content(book, matcherStart, matcherEnd);
     }
 
     private String content(String book, Matcher matcherStart, Matcher matcherEnd) {
         return book.substring(
-                ((!matcherStart.find()) ? -1 : matcherStart.end()),
+                ((!matcherStart.find()) ? 0 : matcherStart.end()),
                 ((!matcherEnd.find()) ? book.length() : matcherEnd.start())
         ).trim();
     }

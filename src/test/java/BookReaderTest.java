@@ -26,6 +26,12 @@ public class BookReaderTest {
         assertThat(result.source).isEqualTo("https://www.gutenberg.org/cache/epub/10/pg10.txt");
     }
 
+    @Test
+    public void testExists() {
+        assertThat(bookReader.exists("https://www.gutenberg.org/cache/epub/5002/pg5002.txt")).isTrue();
+        assertThat(bookReader.exists("https://www.gutenberg.org/cache/epub/5001/pg5001.txt")).isFalse();
+    }
+
     @Parameterized.Parameters
     public static Collection<BookReader> implementations() {
         return List.of(
