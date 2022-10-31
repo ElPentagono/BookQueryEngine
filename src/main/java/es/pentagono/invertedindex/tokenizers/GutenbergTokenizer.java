@@ -19,7 +19,7 @@ public class GutenbergTokenizer implements Tokenizer {
     @Override
     public ArrayList<String> tokenize(String content) {
         return Stream.of(content.toLowerCase()
-                        .replaceAll("[\t\n\\x0B\f\r\\p{Punct}]", "") // TODO quotation marks
+                        .replaceAll("[\t\n\\x0B\f\r\\p{Punct}[0-9]+]", "") // TODO quotation marks
                         .split(" "))
                 .collect(Collectors.toCollection(ArrayList<String>::new));
     }
