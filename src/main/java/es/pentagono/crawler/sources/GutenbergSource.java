@@ -25,27 +25,24 @@ public class GutenbergSource implements Source {
         return new Iterator<>() {
             @Override
             public boolean hasNext() {
-                return unavaibleBooksCounter < MAX_CALLS_WITHOUT_BOOKS;
+                for (int i = 0; i < MAX_CALLS_WITHOUT_BOOKS; i++) {
+                    if (reader.exists(constructURL(++currentBookId))) return true;
+                    currentBookId++;
+                }
+                return false;
             }
 
             @Override
             public Event next() {
                 try {
-                    currentBookId++;
-                    DownloadEvent event = reader.read(constructURL());
-                    if (event.content.equals("")) {
-                        unavaibleBooksCounter++;
-                        if (!hasNext()) return null;
-                        return next();
-                    }
-                    return event;
+                    return reader.read(constructURL(currentBookId++));
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
             }
 
-            private String constructURL() {
-                return URL + "/" + currentBookId + "/pg" + currentBookId + ".txt";
+            private String constructURL(int id) {
+                return URL + "/" + id + "/pg" + id + ".txt";
             }
         };
     }
