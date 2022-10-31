@@ -2,7 +2,8 @@ package es.pentagono.crawler.readers;
 
 import es.pentagono.crawler.BookReader;
 import es.pentagono.crawler.DownloadEvent;
-import es.pentagono.crawler.parsers.GutenbergBookParser;
+import es.pentagono.crawler.EventParser;
+import es.pentagono.crawler.parsers.GutenbergDownloadEventParser;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.safety.Whitelist;
@@ -11,21 +12,17 @@ import java.io.IOException;
 
 
 public class GutenbergBookReader implements BookReader {
-
-    private final GutenbergBookParser gutenbergBookParser;
+    private static final EventParser DownloadEventParser = new GutenbergDownloadEventParser();
     private static final int MAX_BOOK_SIZE = 10240000;
 
-    public GutenbergBookReader() {
-        this.gutenbergBookParser = new GutenbergBookParser();
-    }
 
     @Override
     public DownloadEvent read(String url) throws IOException {
         Document document = Jsoup.connect(url).maxBodySize(MAX_BOOK_SIZE).get();
-        return gutenbergBookParser.parse(url, getBookKeepingBreaklines(document));
+        return (DownloadEvent) DownloadEventParser.parse(url, getBookKeepingBreakLines(document));
     }
 
-    private String getBookKeepingBreaklines(Document document) {
+    private String getBookKeepingBreakLines(Document document) {
         document.outputSettings(new Document.OutputSettings().prettyPrint(false));
         return Jsoup.clean(
             document.html().replaceAll("\\\\n", "\n"),

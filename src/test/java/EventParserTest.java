@@ -1,6 +1,6 @@
 import es.pentagono.crawler.DownloadEvent;
 import es.pentagono.crawler.EventParser;
-import es.pentagono.crawler.parsers.GutenbergBookParser;
+import es.pentagono.crawler.parsers.GutenbergDownloadEventParser;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -50,7 +50,7 @@ public class EventParserTest {
     @Parameterized.Parameters
     public static Collection<EventParser> implementations() {
         return List.of(
-            new GutenbergBookParser()
+            new GutenbergDownloadEventParser()
         );
     }
 

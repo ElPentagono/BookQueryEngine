@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class GutenbergBookParser implements EventParser {
+public class GutenbergDownloadEventParser implements EventParser {
 
     @Override
     public DownloadEvent parse(String url, String book) {
