@@ -17,22 +17,24 @@ public class InvertedIndexBuilder {
 
     public InvertedIndex build(Document content) throws IOException {
         HashMap<String, List<int[]>> invertedIndex = new HashMap<>();
-        _process_document(invertedIndex, content);
+        processDocument(invertedIndex, content);
         return new InvertedIndex(invertedIndex);
     }
 
-    public void _process_document(HashMap<String, List<int[]>> invertedIndex, Document document) throws IOException {
+    private void processDocument(HashMap<String, List<int[]>> invertedIndex, Document document) throws IOException {
         ArrayList<String> content = this.tokenize.tokenize(document.content);
-        for (int i = 0; i<content.size() ; i++) {
-            if (this.tokenize.check(content.get(i))) continue;
-            int[] ocurrence = new int[] {document.uuid, i};
-            addOcurrence(content.get(i), ocurrence, invertedIndex);
-        }
+        for (int i = 0; i < content.size() ; i++)
+            processWord(invertedIndex, document, content, i);
+    }
+
+    private void processWord(HashMap<String, List<int[]>> invertedIndex, Document document, ArrayList<String> content, int i) throws IOException {
+        if (this.tokenize.check(content.get(i))) return;
+        addOcurrence(content.get(i), new int[] {document.uuid, i}, invertedIndex);
     }
 
     private void addOcurrence(String word, int[] ocurrence, HashMap<String, List<int[]>> invertedIndex ) {
         List<int[]> ocurrences = invertedIndex.get(word);
-        if(ocurrences == null){
+        if (ocurrences == null) {
             invertedIndex.put(word, new ArrayList<>(List.of(ocurrence)));
             return;
         }

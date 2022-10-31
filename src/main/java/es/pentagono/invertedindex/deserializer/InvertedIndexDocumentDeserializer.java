@@ -2,7 +2,7 @@ package es.pentagono.invertedindex.deserializer;
 
 import es.pentagono.Document;
 import es.pentagono.invertedindex.DocumentLoader;
-import es.pentagono.invertedindex.builders.MetadataBuilder;
+import es.pentagono.MetadataBuilder;
 
 import java.io.*;
 import java.util.stream.Collectors;
