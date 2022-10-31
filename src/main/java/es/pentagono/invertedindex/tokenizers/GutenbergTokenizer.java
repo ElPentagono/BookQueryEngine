@@ -16,6 +16,7 @@ public class GutenbergTokenizer implements Tokenizer {
     public void loadStopwords() throws IOException {
         this.stopwords =  Files.readAllLines(Paths.get("stopwords/stopwords.txt"));
     }
+
     @Override
     public ArrayList<String> tokenize(String content) {
         return Stream.of(content.toLowerCase()
@@ -28,6 +29,4 @@ public class GutenbergTokenizer implements Tokenizer {
         loadStopwords();
         return this.stopwords.contains(word);
     }
-
-
 }

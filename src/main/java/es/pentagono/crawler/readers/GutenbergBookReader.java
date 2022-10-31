@@ -33,7 +33,6 @@ public class GutenbergBookReader implements BookReader {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
     }
 
     private String getBookKeepingBreakLines(Document document) {
