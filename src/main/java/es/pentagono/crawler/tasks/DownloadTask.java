@@ -2,7 +2,6 @@ package es.pentagono.crawler.tasks;
 
 import es.pentagono.Document;
 import es.pentagono.crawler.DocumentStore;
-import es.pentagono.crawler.EventPersister;
 import es.pentagono.crawler.Source;
 import es.pentagono.crawler.Task;
 import es.pentagono.crawler.events.DownloadEvent;
@@ -15,38 +14,44 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Iterator;
 
 public class DownloadTask implements Task {
 
-    private final MetadataBuilder builder = new MetadataBuilder(); //TODO change name into CapitalCase?
-    private final int id;
-    private final Source source;
-    private final DocumentStore store;
-    private final EventPersister persister;
+    private final MetadataBuilder Builder = new MetadataBuilder();
+    private Source source;
+    private DocumentStore store;
 
-    public DownloadTask(int id, Source source, DocumentStore store, EventPersister persister) {
-        this.id = id;
+
+    public DownloadTask from(Source source) {
         this.source = source;
+        return this;
+    }
+
+    public DownloadTask into(DocumentStore store) {
         this.store = store;
-        this.persister = persister;
+        return this;
     }
 
     @Override
     public void execute() {
+        Iterator<DownloadEvent> events = source.all();
         try {
-            DownloadEvent event = source.readBook(id);
-            String content = event.content;
-            String source = event.source;
-            String md5 = Md5(content);
-            if (alreadyStored(source, md5)) return;
-            String uuid = store.store(new Document(source, builder.build(event.metadata), content));
-            persister.persist(new StoreEvent(event.ts, source, uuid, md5));
+            while (events.hasNext()) {
+                if (isStored(events.next().source, Md5(events.next().content))) return;
+                store.store(new StoreEvent(
+                        events.next().ts,
+                        events.next().source,
+                        store.store(new Document(events.next().source, Builder.build(events.next().metadata), events.next().content)),
+                        Md5(events.next().content))
+                );
+            }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    private boolean alreadyStored(String source, String md5) throws IOException {
+    private boolean isStored(String source, String md5) throws IOException {
         return Files.lines(Paths.get("")) //TODO
                 .map(line -> line.split("\t"))
                 .anyMatch(row -> row[1].equals(source) && row[3].equals(md5));
