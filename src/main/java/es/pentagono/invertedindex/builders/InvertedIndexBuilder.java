@@ -16,28 +16,34 @@ public class InvertedIndexBuilder {
     }
 
     public InvertedIndex build(Document content) throws IOException {
-        HashMap<String, List<int[]>> invertedIndex = new HashMap<>();
+        HashMap<String, List<String[]>> invertedIndex = new HashMap<>();
         processDocument(invertedIndex, content);
         return new InvertedIndex(invertedIndex);
     }
 
-    private void processDocument(HashMap<String, List<int[]>> invertedIndex, Document document) throws IOException {
+    private void processDocument(HashMap<String, List<String[]>> invertedIndex, Document document) throws IOException {
         ArrayList<String> content = this.tokenize.tokenize(document.content);
         for (int i = 0; i < content.size() ; i++)
             processWord(invertedIndex, document, content, i);
     }
 
-    private void processWord(HashMap<String, List<int[]>> invertedIndex, Document document, ArrayList<String> content, int i) throws IOException {
+    private void processWord(HashMap<String, List<String[]>> invertedIndex, Document document, ArrayList<String> content, int i) throws IOException {
         if (this.tokenize.check(content.get(i))) return;
-        addOcurrence(content.get(i), new int[] {document.uuid, i}, invertedIndex);
+        addOccurrence(content.get(i), new String[] {document.id, String.valueOf(i) }, invertedIndex);
     }
 
-    private void addOcurrence(String word, int[] ocurrence, HashMap<String, List<int[]>> invertedIndex ) {
-        List<int[]> ocurrences = invertedIndex.get(word);
+    private void addOccurrence(String word, String[] occurrence, HashMap<String, List<String[]>> invertedIndex ) {
+        List<String[]> ocurrences = invertedIndex.get(word);
         if (ocurrences == null) {
-            invertedIndex.put(word, new ArrayList<>(List.of(ocurrence)));
+            createListOfOccurrences(word, occurrence, invertedIndex);
             return;
         }
-        ocurrences.add(ocurrence);
+        ocurrences.add(occurrence);
+    }
+
+    private static void createListOfOccurrences(String word, String[] ocurrence, HashMap<String, List<String[]>> invertedIndex) {
+        ArrayList<String[]> list = new ArrayList<>();
+        list.add(ocurrence);
+        invertedIndex.put(word, list);
     }
 }

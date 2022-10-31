@@ -1,18 +1,18 @@
 package es.pentagono;
 
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class InvertedIndex {
 
-    HashMap<String, List<int[]>> index;
-    public InvertedIndex(HashMap<String, List<int[]>> index) {
+    Map<String, List<String[]>> index;
+    public InvertedIndex(Map<String, List<String[]>> index) {
         this.index = index;
     }
-    public List<int[]> lookup_query(String word){
+    public List<String[]> lookupQuery(String word){
         return this.index.get(word);
     }
-    public HashMap<String, List<int[]>> getIndex(){
+    public Map<String, List<String[]>> getIndex(){
         return this.index;
     }
 }

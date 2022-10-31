@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 
 public class InvertedIndexDocumentDeserializer implements DocumentLoader {
     @Override
-    public Document load(int documentId) throws IOException {
+    public Document load(String documentId) throws IOException {
         BufferedReader reader = new BufferedReader(new FileReader(
                 new File("datalake\\" + documentId).getAbsolutePath()));
 

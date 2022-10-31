@@ -1,19 +1,18 @@
 package es.pentagono.invertedindex.serializers;
 
 import es.pentagono.InvertedIndex;
-import es.pentagono.invertedindex.InvertedIndexSerializer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class InvertedIndexSerializer_ implements InvertedIndexSerializer {
+public class InvertedIndexSerializer implements es.pentagono.invertedindex.InvertedIndexSerializer {
 
     HashMap<String, List<List<String>>> tsvIndex = new HashMap<>();
     @Override
     public void serialize(InvertedIndex index) {
         index.getIndex().forEach((word,value) ->{
-            for(int[] element : value){
+            for(String[] element : value){
                 List<String> ocurrence = new ArrayList<>();
                 ocurrence.add(element[0] + "\t" + element[1]); //TODO check \n
                 addOcurrence(word, ocurrence, tsvIndex);
