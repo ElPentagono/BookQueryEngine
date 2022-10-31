@@ -13,16 +13,8 @@ public class FSDocumentPersister implements DocumentPersister {
     public void persist(String id, String metadata, String content) {
         String path = String.format("C:/Users/Jose Juan/IdeaProjects/BookQueryEngine/documents/%s", id);  // TODO
         createDirectory(path);
-        createMetadataFile(path, metadata);
-        createContentFile(path, content);
-    }
-
-    private void createContentFile(String path, String content) {
-        createFile(path + "/content.txt", content);
-    }
-
-    private void createMetadataFile(String path, String metadata) {
         createFile(path + "/metadata.json", metadata);
+        createFile(path + "/content.txt", content);
     }
 
     private void createDirectory(String path) {
@@ -38,6 +30,4 @@ public class FSDocumentPersister implements DocumentPersister {
             throw new RuntimeException(e);
         }
     }
-
-
 }

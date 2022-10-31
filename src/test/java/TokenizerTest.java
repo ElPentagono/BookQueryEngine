@@ -9,7 +9,8 @@ public class TokenizerTest {
     public void name() {
         GutenbergTokenizer tokenizer = new GutenbergTokenizer();
         try {
-            System.out.println(tokenizer.tokenize(new GutenbergBookReader().read("https://www.gutenberg.org/files/69270/69270-0.txt").content));
+            String content = new GutenbergBookReader().read("https://www.gutenberg.org/files/69270/69270-0.txt").content;
+            System.out.println(tokenizer.tokenize(content));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

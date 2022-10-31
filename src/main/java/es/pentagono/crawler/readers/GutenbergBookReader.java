@@ -8,15 +8,17 @@ import org.jsoup.nodes.Document;
 import org.jsoup.safety.Whitelist;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+
+import static java.awt.BorderLayout.LINE_START;
 
 public class GutenbergBookReader implements BookReader {
 
     private final GutenbergBookParser gutenbergBookParser;
-    private final int MAX_BOOK_SIZE;
+    private static final int MAX_BOOK_SIZE = 10240000;
 
     public GutenbergBookReader() {
         this.gutenbergBookParser = new GutenbergBookParser();
-        this.MAX_BOOK_SIZE = 10240000;
     }
 
     @Override
