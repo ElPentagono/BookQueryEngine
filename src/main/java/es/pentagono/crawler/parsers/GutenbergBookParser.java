@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class GutenbergDownloadEventParser implements EventParser {
+public class GutenbergBookParser implements EventParser {
 
     @Override
     public DownloadEvent parse(String url, String book) {
@@ -51,12 +51,12 @@ public class GutenbergDownloadEventParser implements EventParser {
     private String getMetadataFieldFromPattern(String book, Pattern pattern) {
         Matcher matcher = pattern.matcher(book);
         return ((matcher.find()) ? book.substring(matcher.start(), matcher.end() - 1).split(":", 2)[1].trim()
-            : null);
+                : null);
     }
 
     private String content(String book) {
-        Matcher matcherStart = Pattern.compile("\\*\\*\\* START OF THE PROJECT GUTENBERG .*?\\*\\*\\*", Pattern.DOTALL).matcher(book);
-        Matcher matcherEnd = Pattern.compile("\\*\\*\\* END OF THE PROJECT GUTENBERG .*?(?=(\\*\\*\\*))", Pattern.DOTALL).matcher(book);
+        Matcher matcherStart = Pattern.compile("\\*\\*\\* START OF (THE|THIS) PROJECT GUTENBERG .*?\\*\\*\\*", Pattern.DOTALL).matcher(book);
+        Matcher matcherEnd = Pattern.compile("\\*\\*\\* END OF (THE|THIS) PROJECT GUTENBERG .*?(?=(\\*\\*\\*))", Pattern.DOTALL).matcher(book);
         return content(book, matcherStart, matcherEnd);
     }
 

@@ -1,4 +1,6 @@
-package es.pentagono.crawler;
+package es.pentagono.crawler.events;
+
+import es.pentagono.crawler.Event;
 
 import java.sql.Timestamp;
 import java.util.Map;

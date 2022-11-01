@@ -1,4 +1,3 @@
 package es.pentagono.crawler;
 
-public interface Event {
-}
+public interface Event {}

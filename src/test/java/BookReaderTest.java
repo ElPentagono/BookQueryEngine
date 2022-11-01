@@ -1,5 +1,5 @@
 import es.pentagono.crawler.BookReader;
-import es.pentagono.crawler.DownloadEvent;
+import es.pentagono.crawler.events.DownloadEvent;
 import es.pentagono.crawler.readers.GutenbergBookReader;
 import org.junit.Test;
 import org.junit.runner.RunWith;

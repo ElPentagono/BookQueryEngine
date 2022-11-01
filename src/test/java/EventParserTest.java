@@ -1,4 +1,4 @@
-import es.pentagono.crawler.DownloadEvent;
+import es.pentagono.crawler.events.DownloadEvent;
 import es.pentagono.crawler.EventParser;
 import es.pentagono.crawler.parsers.GutenbergDownloadEventParser;
 import org.junit.Test;
