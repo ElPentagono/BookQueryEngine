@@ -15,7 +15,7 @@ public class FileSystemInvertedIndexPersister implements InvertedIndexPersister 
     @Override
     public void persist(Map<String, String> invertedIndex) {
         for (String word : invertedIndex.keySet()) {
-            File file = new File("datamart/invertedIndex/" + word.charAt(0) + "/" + word.substring(0,2));
+            File file = new File(System.getenv("DATAMART") + "/invertedIndex/" + word.charAt(0) + "/" + word.substring(0,2));
             createDirectoryWord(file.getAbsolutePath());
             write(file.getAbsolutePath() + String.format("/%s", word), invertedIndex.get(word));
         }

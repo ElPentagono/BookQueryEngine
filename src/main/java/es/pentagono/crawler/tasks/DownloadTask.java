@@ -23,8 +23,6 @@ public class DownloadTask implements Task {
     private Source source;
     private DocumentStore store;
 
-    private final static String UPDATE_LOG = "C:/Users/juanc/IdeaProjects/BookQueryEngine/datalake/events/updates.log";
-
 
     public DownloadTask from(Source source) {
         this.source = source;
@@ -56,8 +54,8 @@ public class DownloadTask implements Task {
     }
 
     private boolean isStored(String source, String md5) throws IOException {
-        if (!Files.exists(Paths.get(UPDATE_LOG))) return false;
-        return Files.lines(Paths.get(UPDATE_LOG)) // TODO
+        if (!Files.exists(Paths.get(System.getenv("DATALAKE") + "/events/updates.log"))) return false;
+        return Files.lines(Paths.get(System.getenv("DATALAKE") + "/events/updates.log"))
                 .map(line -> line.split("\t"))
                 .anyMatch(row -> row[1].equals(source) && row[3].equals(md5));
     }

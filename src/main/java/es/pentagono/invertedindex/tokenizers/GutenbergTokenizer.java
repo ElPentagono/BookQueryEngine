@@ -1,12 +1,14 @@
 package es.pentagono.invertedindex.tokenizers;
+
 import es.pentagono.invertedindex.Tokenizer;
 
-import java.io.IOException;
+import java.net.URL;
 import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.*;
+import java.nio.file.Path;
+import java.util.Collections;
+import java.util.List;
+import java.util.StringTokenizer;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class GutenbergTokenizer implements Tokenizer {
 
@@ -22,8 +24,9 @@ public class GutenbergTokenizer implements Tokenizer {
     }
     public static List<String> loadStopwords() {
         try {
-            return Files.readAllLines(Paths.get("C:/Users/juanc/IdeaProjects/BookQueryEngine/src/main/resources/stopwords.txt"));
-        } catch (IOException e) {
+            URL stopwords = GutenbergTokenizer.class.getClassLoader().getResource("stopwords.txt");
+            return Files.readAllLines(Path.of(stopwords.toURI()));
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
