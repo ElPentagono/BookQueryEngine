@@ -35,8 +35,8 @@ public class InvertedIndexBuilder {
     }
 
     private void processWord(HashMap<String, List<String[]>> invertedIndex, Document document, List<String> content, int i) {
-        if (this.tokenize.check(content.get(i))) return;
-        addOccurrence(content.get(i), new String[] {document.id, String.valueOf(i) }, invertedIndex);
+        if (this.tokenize.check(content.get(i).toLowerCase())) return;
+        addOccurrence(content.get(i).toLowerCase(), new String[] {document.id, String.valueOf(i) }, invertedIndex);
     }
 
     private void addOccurrence(String word, String[] occurrence, HashMap<String, List<String[]>> invertedIndex ) {

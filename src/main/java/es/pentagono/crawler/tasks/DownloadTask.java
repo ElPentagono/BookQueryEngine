@@ -23,7 +23,7 @@ public class DownloadTask implements Task {
     private Source source;
     private DocumentStore store;
 
-    private final static String UPDATE_LOG = "C:/Users/Jose Juan/IdeaProjects/BookQueryEngine/datalake/events/updates.log";
+    private final static String UPDATE_LOG = "C:/Users/juanc/IdeaProjects/BookQueryEngine/datalake/events/updates.log";
 
 
     public DownloadTask from(Source source) {

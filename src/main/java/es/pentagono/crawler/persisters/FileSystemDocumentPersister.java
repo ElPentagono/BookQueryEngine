@@ -10,8 +10,8 @@ import java.nio.file.Paths;
 
 public class FileSystemDocumentPersister implements DocumentPersister {
     private static final String TSV_HEADER = "ts\tsrc\tuuid\tmd5\n";
-    private static final String DATALAKE = "C:/Users/Jose Juan/IdeaProjects/BookQueryEngine/datalake";
-    private static final String DOCUMENTS_LAKE = "C:/Users/Jose Juan/IdeaProjects/BookQueryEngine/documents";
+    private static final String DATALAKE = "C:/Users/juanc/IdeaProjects/BookQueryEngine/datalake";
+    private static final String DOCUMENTS_LAKE = "C:/Users/juanc/IdeaProjects/BookQueryEngine/documents";
     @Override
     public void persist(String id, String metadata, String content) {
         String path = String.format(DOCUMENTS_LAKE + "/%s", id);  // TODO

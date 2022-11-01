@@ -15,17 +15,14 @@ public class GutenbergTokenizer implements Tokenizer {
 
     @Override
     public List<String> tokenize(String content) {
-        return Collections.list(new StringTokenizer(content, " ")).stream()
+        String s = content.replaceAll("[\\p{Punct}[0-9]+_\t\n\\x0B\f\n\r-]", " ");
+        return Collections.list(new StringTokenizer(s, " ")).stream()
                 .map(token -> (String) token)
                 .collect(Collectors.toList());
     }
-
     public static List<String> loadStopwords() {
         try {
-            return Files.readAllLines(
-                    Paths.get(
-                            Objects.requireNonNull(Thread.currentThread().getContextClassLoader()
-                                    .getResource("stopwords.txt")).getPath()));
+            return Files.readAllLines(Paths.get("C:/Users/juanc/IdeaProjects/BookQueryEngine/src/main/resources/stopwords.txt"));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

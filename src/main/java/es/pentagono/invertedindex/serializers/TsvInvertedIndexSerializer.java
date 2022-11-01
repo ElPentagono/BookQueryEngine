@@ -1,12 +1,13 @@
 package es.pentagono.invertedindex.serializers;
 
 import es.pentagono.InvertedIndex;
+import es.pentagono.invertedindex.InvertedIndexSerializer;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class InvertedIndexSerializer implements es.pentagono.invertedindex.InvertedIndexSerializer {
+public class TsvInvertedIndexSerializer implements InvertedIndexSerializer {
 
 
     @Override
