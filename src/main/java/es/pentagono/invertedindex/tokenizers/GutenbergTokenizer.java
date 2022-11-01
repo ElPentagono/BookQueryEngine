@@ -4,29 +4,31 @@ import es.pentagono.invertedindex.Tokenizer;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class GutenbergTokenizer implements Tokenizer {
 
-    private List<String> stopwords;
 
-    public void loadStopwords() throws IOException {
-        this.stopwords =  Files.readAllLines(Paths.get("stopwords/stopwords.txt"));
-    }
+    private static final List<String> stopwords = loadStopwords();
 
     @Override
-    public ArrayList<String> tokenize(String content) {
-        return Stream.of(content.toLowerCase()
-                        .replaceAll("[\t\n\\x0B\f\r\\p{Punct}[0-9]+]", "") // TODO quotation marks
-                        .split(" "))
-                .collect(Collectors.toCollection(ArrayList<String>::new));
+    public List<String> tokenize(String content) {
+        String s = content.replaceAll("[\\p{Punct}[0-9]+_\t\n\\x0B\f\n\r-]", " ");
+        return Collections.list(new StringTokenizer(s, " ")).stream()
+                .map(token -> (String) token)
+                .collect(Collectors.toList());
+    }
+    public static List<String> loadStopwords() {
+        try {
+            return Files.readAllLines(Paths.get("C:/Users/juanc/IdeaProjects/BookQueryEngine/src/main/resources/stopwords.txt"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public boolean check(String word) throws IOException {
-        loadStopwords();
-        return this.stopwords.contains(word);
+    public boolean check(String word) {
+        return stopwords.contains(word);
     }
 }

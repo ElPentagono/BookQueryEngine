@@ -9,28 +9,22 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 public class FileSystemDocumentPersister implements DocumentPersister {
-    private static final String TSVHEADER = "ts\tsrc\tuuid\tmd5\n";
+    private static final String TSV_HEADER = "ts\tsrc\tuuid\tmd5\n";
+    private static final String DATALAKE = "C:/Users/juanc/IdeaProjects/BookQueryEngine/datalake";
+    private static final String DOCUMENTS_LAKE = "C:/Users/juanc/IdeaProjects/BookQueryEngine/documents";
     @Override
     public void persist(String id, String metadata, String content) {
-        String path = String.format("C:/Users/juanc/IdeaProjects/BookQueryEngine/documents/%s", id);  // TODO
+        String path = String.format(DOCUMENTS_LAKE + "/%s", id);  // TODO
         createDirectory(path);
-        createMetadataFile(path, metadata);
-        createContentFile(path, content);
+        createFile(path + "/metadata.json", metadata);
+        createFile(path + "/content.txt", content);
     }
 
     @Override
     public void persist(String event) {
-        String path = String.format("C:/Users/juanc/IdeaProjects/BookQueryEngine/datalake");  // TODO
+        String path = String.format(DATALAKE);  // TODO
         if (! Files.exists(Paths.get(path))) createLogFile(path);
         writeEvent(path + "/updates.log", event);
-    }
-
-    private void createContentFile(String path, String content) {
-        createFile(path + "/content.txt", content);
-    }
-
-    private void createMetadataFile(String path, String metadata) {
-        createFile(path + "/metadata.json", metadata);
     }
 
     private void createDirectory(String path) {
@@ -39,7 +33,7 @@ public class FileSystemDocumentPersister implements DocumentPersister {
 
     private void createLogFile(String path) {
         new File(path).mkdirs();
-        createFile(path + "/updates.log", TSVHEADER);
+        createFile(path + "/updates.log", TSV_HEADER);
     }
 
     private static void createFile(String file, String text) {
@@ -61,5 +55,4 @@ public class FileSystemDocumentPersister implements DocumentPersister {
             throw new RuntimeException(e);
         }
     }
-
 }

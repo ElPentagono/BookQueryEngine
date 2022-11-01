@@ -1,12 +1,11 @@
 package es.pentagono.crawler.readers;
 
+import com.mashape.unirest.http.Unirest;
+import com.mashape.unirest.http.exceptions.UnirestException;
 import es.pentagono.crawler.BookReader;
 import es.pentagono.crawler.events.DownloadEvent;
 import es.pentagono.crawler.EventParser;
 import es.pentagono.crawler.parsers.GutenbergDownloadEventParser;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.safety.Whitelist;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -15,13 +14,19 @@ import java.net.URL;
 
 public class GutenbergBookReader implements BookReader {
     private static final EventParser DownloadEventParser = new GutenbergDownloadEventParser();
-    private static final int MAX_BOOK_SIZE = 10240000;
-
 
     @Override
     public DownloadEvent read(String url) throws IOException {
-        Document document = Jsoup.connect(url).maxBodySize(MAX_BOOK_SIZE).get();
-        return (DownloadEvent) DownloadEventParser.parse(url, getBookKeepingBreakLines(document));
+        return (DownloadEvent) DownloadEventParser.parse(url, getBook(url));
+    }
+
+    private String getBook(String url) {
+        try {
+            Unirest.setTimeouts(0, 0);
+            return Unirest.get(url).asString().getBody();
+        } catch (UnirestException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -33,15 +38,5 @@ public class GutenbergBookReader implements BookReader {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    private String getBookKeepingBreakLines(Document document) {
-        document.outputSettings(new Document.OutputSettings().prettyPrint(false));
-        return Jsoup.clean(
-                document.html().replaceAll("\\\\n", "\n"),
-                "",
-                Whitelist.none(),
-                new Document.OutputSettings().prettyPrint(false)
-        );
     }
 }

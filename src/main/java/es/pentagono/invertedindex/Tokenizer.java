@@ -5,5 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public interface Tokenizer {
-    ArrayList<String> tokenize(String content) throws IOException; //TODO change type
+    List<String> tokenize(String content) throws IOException; //TODO change type
+    boolean check(String word);
 }

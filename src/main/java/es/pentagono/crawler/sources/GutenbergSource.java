@@ -10,7 +10,7 @@ import java.util.Iterator;
 
 public class GutenbergSource implements Source {
 
-    private static int currentBookId = 10;
+    private static int currentBookId = 7;
     private static final int MAX_CALLS_WITHOUT_BOOKS = 20;
     private static final String URL = "https://www.gutenberg.org/cache/epub";
 
@@ -31,7 +31,7 @@ public class GutenbergSource implements Source {
             @Override
             public Event next() {
                 try {
-                    return reader.read(constructURL(currentBookId++));
+                    return reader.read(constructURL(++currentBookId));
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }

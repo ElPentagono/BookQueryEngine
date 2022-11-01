@@ -7,7 +7,7 @@ import es.pentagono.crawler.Source;
 import es.pentagono.crawler.Task;
 import es.pentagono.crawler.events.DownloadEvent;
 import es.pentagono.crawler.events.StoreEvent;
-import es.pentagono.invertedindex.builders.MetadataBuilder;
+import es.pentagono.MetadataBuilder;
 
 import java.io.IOException;
 import java.math.BigInteger;
@@ -22,6 +22,8 @@ public class DownloadTask implements Task {
     private final MetadataBuilder Builder = new MetadataBuilder();
     private Source source;
     private DocumentStore store;
+
+    private final static String UPDATE_LOG = "C:/Users/juanc/IdeaProjects/BookQueryEngine/datalake/events/updates.log";
 
 
     public DownloadTask from(Source source) {
@@ -40,7 +42,7 @@ public class DownloadTask implements Task {
         try {
             while (events.hasNext()) {
                 DownloadEvent event = (DownloadEvent) events.next();
-                if (isStored(event.source, Md5(event.content))) return;
+                if (isStored(event.source, Md5(event.content))) continue;
                 store.store(new StoreEvent(
                         event.ts,
                         event.source,
@@ -54,8 +56,8 @@ public class DownloadTask implements Task {
     }
 
     private boolean isStored(String source, String md5) throws IOException {
-        if (!Files.exists(Paths.get("C:/Users/juanc/IdeaProjects/BookQueryEngine/datalake/updates.log"))) return false;
-        return Files.lines(Paths.get("C:/Users/juanc/IdeaProjects/BookQueryEngine/datalake/updates.log")) // TODO
+        if (!Files.exists(Paths.get(UPDATE_LOG))) return false;
+        return Files.lines(Paths.get(UPDATE_LOG)) // TODO
                 .map(line -> line.split("\t"))
                 .anyMatch(row -> row[1].equals(source) && row[3].equals(md5));
     }
