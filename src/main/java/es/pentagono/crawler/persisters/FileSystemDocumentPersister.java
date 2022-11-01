@@ -20,9 +20,9 @@ public class FileSystemDocumentPersister implements DocumentPersister {
 
     @Override
     public void persist(String event) {
-        String path = String.format("C:/Users/juanc/IdeaProjects/BookQueryEngine/datalake/updates.log");  // TODO
-        createUpdatesFile(path);
-        writeEvent(path, event);
+        String path = String.format("C:/Users/juanc/IdeaProjects/BookQueryEngine/datalake");  // TODO
+        if (! Files.exists(Paths.get(path))) createLogFile(path);
+        writeEvent(path + "/updates.log", event);
     }
 
     private void createContentFile(String path, String content) {
@@ -37,6 +37,11 @@ public class FileSystemDocumentPersister implements DocumentPersister {
         if (!Files.exists(Paths.get(path))) new File(path).mkdirs();
     }
 
+    private void createLogFile(String path) {
+        new File(path).mkdirs();
+        createFile(path + "/updates.log", TSVHEADER);
+    }
+
     private static void createFile(String file, String text) {
         try {
             FileWriter writer = new FileWriter(file);
@@ -45,10 +50,6 @@ public class FileSystemDocumentPersister implements DocumentPersister {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    private static void createUpdatesFile(String path) {
-        if (!Files.exists(Paths.get(path))) createFile(path, TSVHEADER);
     }
 
     private static void writeEvent(String path, String event) {

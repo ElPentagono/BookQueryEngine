@@ -3,17 +3,17 @@ package es.pentagono.crawler.stores;
 import es.pentagono.Document;
 import es.pentagono.crawler.*;
 import es.pentagono.crawler.persisters.FileSystemDocumentPersister;
-import es.pentagono.crawler.serializers.TsvEventSerializer;
 
 import java.util.UUID;
 
 public class FileSystemDocumentStore implements DocumentStore {
-    public final MetadataSerializer metadataSerializer;
     public final DocumentPersister Persister = new FileSystemDocumentPersister();
-    public final EventSerializer Serializer = new TsvEventSerializer();
+    public final MetadataSerializer metadataSerializer;
+    public final EventSerializer eventSerializer;
 
-    public FileSystemDocumentStore(MetadataSerializer serializer) {
-        this.metadataSerializer = serializer;
+    public FileSystemDocumentStore(MetadataSerializer metadataSerializer, EventSerializer eventSerializer) {
+        this.metadataSerializer = metadataSerializer;
+        this.eventSerializer = eventSerializer;
     }
 
     @Override
@@ -25,7 +25,7 @@ public class FileSystemDocumentStore implements DocumentStore {
 
     @Override
     public void store(Event event) {
-        Persister.persist(Serializer.serialize(event));
+        Persister.persist(eventSerializer.serialize(event));
     }
 
 

@@ -14,38 +14,56 @@ public class GutenbergBookParser implements EventParser {
     @Override
     public DownloadEvent parse(String url, String book) {
         return new DownloadEvent(url,
-            getMetadataFromBook(book),
-            getContentFromBook(book),
-            new Timestamp(System.currentTimeMillis()));
+                getMetadataFromBook(book),
+                content(book),
+                new Timestamp(System.currentTimeMillis()));
     }
 
     private Map<String, String> getMetadataFromBook(String book) {
         Map<String, String> metadata = new HashMap<>();
-        for (String metadataField : new String[]{"Title", "Author", "Language"})
-            metadata.put(metadataField.toLowerCase(),
-                getMetadataFieldFromPattern(book, Pattern.compile(metadataField + "(.+[\r\n])+")));
-
-        metadata.put("releaseDate",
-            getMetadataFieldFromPattern(book, Pattern.compile("Release Date.+?(?=(\\[.*]))", Pattern.DOTALL)));
+        addFieldsToMetadata(book, metadata);
         return metadata;
+    }
+
+    private void addFieldsToMetadata(String book, Map<String, String> metadata) {
+        addTitle(book, metadata);
+        addAuthor(book, metadata);
+        addLanguage(book, metadata);
+        addReleaseDate(book, metadata);
+    }
+
+    private void addReleaseDate(String book, Map<String, String> metadata) {
+        metadata.put("releaseDate",  getMetadataFieldFromPattern(book, Pattern.compile("Release Date.+?(?=(\\[.*]))", Pattern.DOTALL)));
+    }
+
+    private void addLanguage(String book, Map<String, String> metadata) {
+        metadata.put("language",  getMetadataFieldFromPattern(book, Pattern.compile("Language(.+[\r\n])+")));
+    }
+
+    private void addAuthor(String book, Map<String, String> metadata) {
+        metadata.put("author",  getMetadataFieldFromPattern(book, Pattern.compile("Author(.+[\r\n])+")));
+    }
+
+    private void addTitle(String book, Map<String, String> metadata) {
+        metadata.put("title",  getMetadataFieldFromPattern(book, Pattern.compile("Title(.+[\r\n])+")));
     }
 
     private String getMetadataFieldFromPattern(String book, Pattern pattern) {
         Matcher matcher = pattern.matcher(book);
         return ((matcher.find()) ? book.substring(matcher.start(), matcher.end() - 1).split(":", 2)[1].trim()
-            : null);
+                : null);
     }
 
-    private String getContentFromBook(String book) {
-        Matcher matcherStart = getMatcherFromPattern("\\*\\*\\* START OF THE PROJECT GUTENBERG .* \\*\\*\\*", book);
-        Matcher matcherEnd = getMatcherFromPattern("\\*\\*\\* END OF THE PROJECT GUTENBERG .* \\*\\*\\*", book);
+    private String content(String book) {
+        Matcher matcherStart = Pattern.compile("\\*\\*\\* START OF (THE|THIS) PROJECT GUTENBERG .*?\\*\\*\\*", Pattern.DOTALL).matcher(book);
+        Matcher matcherEnd = Pattern.compile("\\*\\*\\* END OF (THE|THIS) PROJECT GUTENBERG .*?(?=(\\*\\*\\*))", Pattern.DOTALL).matcher(book);
+        return content(book, matcherStart, matcherEnd);
+    }
+
+    private String content(String book, Matcher matcherStart, Matcher matcherEnd) {
         return book.substring(
-            ((!matcherStart.find()) ? -1 : matcherStart.end()),
-            ((!matcherEnd.find()) ? book.length() : matcherEnd.start())
+                ((!matcherStart.find()) ? 0 : matcherStart.end()),
+                ((!matcherEnd.find()) ? book.length() : matcherEnd.start())
         ).trim();
-    }
-
-    private Matcher getMatcherFromPattern(String regex, String book) {
-        return Pattern.compile(regex).matcher(book);
     }
 }

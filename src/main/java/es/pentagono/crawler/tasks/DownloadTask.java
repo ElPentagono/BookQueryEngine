@@ -2,6 +2,7 @@ package es.pentagono.crawler.tasks;
 
 import es.pentagono.Document;
 import es.pentagono.crawler.DocumentStore;
+import es.pentagono.crawler.Event;
 import es.pentagono.crawler.Source;
 import es.pentagono.crawler.Task;
 import es.pentagono.crawler.events.DownloadEvent;
@@ -35,15 +36,16 @@ public class DownloadTask implements Task {
 
     @Override
     public void execute() {
-        Iterator<DownloadEvent> events = source.all();
+        Iterator<Event> events = source.all();
         try {
             while (events.hasNext()) {
-                if (isStored(events.next().source, Md5(events.next().content))) return;
+                DownloadEvent event = (DownloadEvent) events.next();
+                if (isStored(event.source, Md5(event.content))) return;
                 store.store(new StoreEvent(
-                        events.next().ts,
-                        events.next().source,
-                        store.store(new Document(events.next().source, Builder.build(events.next().metadata), events.next().content)),
-                        Md5(events.next().content))
+                        event.ts,
+                        event.source,
+                        store.store(new Document(event.source, Builder.build(event.metadata), event.content)),
+                        Md5(event.content))
                 );
             }
         } catch (Exception e) {
@@ -52,7 +54,8 @@ public class DownloadTask implements Task {
     }
 
     private boolean isStored(String source, String md5) throws IOException {
-        return Files.lines(Paths.get("")) //TODO
+        if (!Files.exists(Paths.get("C:/Users/juanc/IdeaProjects/BookQueryEngine/datalake/updates.log"))) return false;
+        return Files.lines(Paths.get("C:/Users/juanc/IdeaProjects/BookQueryEngine/datalake/updates.log")) // TODO
                 .map(line -> line.split("\t"))
                 .anyMatch(row -> row[1].equals(source) && row[3].equals(md5));
     }

@@ -1,6 +1,7 @@
 import es.pentagono.Document;
 import es.pentagono.Metadata;
 import es.pentagono.crawler.serializers.JsonMetadataSerializer;
+import es.pentagono.crawler.serializers.TsvEventSerializer;
 import es.pentagono.crawler.stores.FileSystemDocumentStore;
 import org.junit.Test;
 
@@ -17,7 +18,7 @@ public class StoreTest {
 
     @Test
     public void store_test() {
-        FileSystemDocumentStore store = new FileSystemDocumentStore(new JsonMetadataSerializer());
+        FileSystemDocumentStore store = new FileSystemDocumentStore(new JsonMetadataSerializer(), new TsvEventSerializer());
         store.store(new Document(
                 "1",
                 new Metadata(

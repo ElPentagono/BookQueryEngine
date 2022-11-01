@@ -1,6 +1,6 @@
 package es.pentagono.crawler.parsers;
 
-import es.pentagono.crawler.DownloadEvent;
+import es.pentagono.crawler.events.DownloadEvent;
 import es.pentagono.crawler.EventParser;
 
 import java.sql.Timestamp;
@@ -14,9 +14,9 @@ public class GutenbergDownloadEventParser implements EventParser {
     @Override
     public DownloadEvent parse(String url, String book) {
         return new DownloadEvent(url,
-            getMetadataFromBook(book),
-            content(book),
-            new Timestamp(System.currentTimeMillis()));
+                getMetadataFromBook(book),
+                content(book),
+                new Timestamp(System.currentTimeMillis()));
     }
 
     private Map<String, String> getMetadataFromBook(String book) {

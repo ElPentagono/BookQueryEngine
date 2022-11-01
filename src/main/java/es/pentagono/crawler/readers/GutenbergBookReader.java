@@ -1,7 +1,7 @@
 package es.pentagono.crawler.readers;
 
 import es.pentagono.crawler.BookReader;
-import es.pentagono.crawler.DownloadEvent;
+import es.pentagono.crawler.events.DownloadEvent;
 import es.pentagono.crawler.EventParser;
 import es.pentagono.crawler.parsers.GutenbergDownloadEventParser;
 import org.jsoup.Jsoup;
@@ -38,10 +38,10 @@ public class GutenbergBookReader implements BookReader {
     private String getBookKeepingBreakLines(Document document) {
         document.outputSettings(new Document.OutputSettings().prettyPrint(false));
         return Jsoup.clean(
-            document.html().replaceAll("\\\\n", "\n"),
-            "",
-            Whitelist.none(),
-            new Document.OutputSettings().prettyPrint(false)
+                document.html().replaceAll("\\\\n", "\n"),
+                "",
+                Whitelist.none(),
+                new Document.OutputSettings().prettyPrint(false)
         );
     }
 }
