@@ -13,6 +13,7 @@ public class FileSystemDocumentPersister implements DocumentPersister {
     @Override
     public void persist(String id, String metadata, String content) {
         String path = String.format(System.getenv("DATALAKE") + "/documents" + "/%s", id);
+        createDirectory(System.getenv("DATALAKE") + "/events");
         createDirectory(path);
         createFile(path + "/metadata.json", metadata);
         createFile(path + "/content.txt", content);
