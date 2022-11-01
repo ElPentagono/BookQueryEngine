@@ -11,22 +11,27 @@ import java.util.stream.Stream;
 
 public class GutenbergTokenizer implements Tokenizer {
 
-    private List<String> stopwords;
 
-    public void loadStopwords() throws IOException {
-        this.stopwords =  Files.readAllLines(Paths.get("stopwords/stopwords.txt"));
+    private static final List<String> stopwords;
+
+    static {
+        try {
+            stopwords = Files.readAllLines(Paths.get("stopwords/stopwords.txt"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
+
 
     @Override
     public ArrayList<String> tokenize(String content) {
         return Stream.of(content.toLowerCase()
-                        .replaceAll("[\t\n\\x0B\f\r\\p{Punct}[0-9]+]", "") // TODO quotation marks
+                        .replaceAll("[\\p{Punct}[0-9]+_\t\n\\x0B\f\n\r-]", "") // TODO quotation marks
                         .split(" "))
                 .collect(Collectors.toCollection(ArrayList<String>::new));
     }
 
-    public boolean check(String word) throws IOException {
-        loadStopwords();
-        return this.stopwords.contains(word);
+    public boolean check(String word) {
+        return stopwords.contains(word);
     }
 }

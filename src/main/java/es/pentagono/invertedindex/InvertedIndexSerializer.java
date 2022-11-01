@@ -2,6 +2,8 @@ package es.pentagono.invertedindex;
 
 import es.pentagono.InvertedIndex;
 
+import java.util.Map;
+
 public interface InvertedIndexSerializer {
-    void serialize(InvertedIndex index);
+    Map<String, String> serialize(InvertedIndex index);
 }

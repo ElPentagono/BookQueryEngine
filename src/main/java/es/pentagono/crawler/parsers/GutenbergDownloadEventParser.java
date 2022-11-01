@@ -33,7 +33,8 @@ public class GutenbergDownloadEventParser implements EventParser {
     }
 
     private void addReleaseDate(String book, Map<String, String> metadata) {
-        metadata.put("releaseDate",  getMetadataFieldFromPattern(book, Pattern.compile("Release Date.+?(?=(\\[.*]))", Pattern.DOTALL)));
+        metadata.put("releaseDate",  getMetadataFieldFromPattern(book, Pattern.compile("Release Date(.+[\r\n])+"))
+                .replaceAll("\\[.*]","").trim());
     }
 
     private void addLanguage(String book, Map<String, String> metadata) {
@@ -51,11 +52,11 @@ public class GutenbergDownloadEventParser implements EventParser {
     private String getMetadataFieldFromPattern(String book, Pattern pattern) {
         Matcher matcher = pattern.matcher(book);
         return ((matcher.find()) ? book.substring(matcher.start(), matcher.end() - 1).split(":", 2)[1].trim()
-            : null);
+            : "");
     }
 
     private String content(String book) {
-        Matcher matcherStart = Pattern.compile("\\*\\*\\* START OF THE PROJECT GUTENBERG .*?\\*\\*\\*", Pattern.DOTALL).matcher(book);
+        Matcher matcherStart = Pattern.compile("\\*\\*\\* START OF (THIS|THE) PROJECT GUTENBERG EBOOK .*?\\*\\*\\*", Pattern.DOTALL).matcher(book);
         Matcher matcherEnd = Pattern.compile("\\*\\*\\* END OF THE PROJECT GUTENBERG .*?(?=(\\*\\*\\*))", Pattern.DOTALL).matcher(book);
         return content(book, matcherStart, matcherEnd);
     }
