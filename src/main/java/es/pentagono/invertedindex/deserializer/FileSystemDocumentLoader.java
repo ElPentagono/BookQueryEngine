@@ -22,7 +22,7 @@ public class FileSystemDocumentLoader implements DocumentLoader {
     @Override
     public Document load(String id) {
         try {
-            String path = String.format("C:/Users/Jose Juan/IdeaProjects/BookQueryEngine/documents/%s", id); // TODO
+            String path = String.format("E:/trabajo/Github_en_E/bigData/BookQueryEngine/documents/%s", id); // TODO
             return new Document(id, getMetadata(path + "/metadata.json"), getContentOf(path + "/content.txt"));
         }
         catch (Exception exception) {

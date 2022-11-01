@@ -24,7 +24,7 @@ public class InvertedIndexBuilder {
 
     private void processDocument(HashMap<String, List<String[]>> invertedIndex, Document document) {
         try {
-            ArrayList<String> content = this.tokenize.tokenize(document.content);
+            List<String> content = this.tokenize.tokenize(document.content);
             for (int i = 0; i < content.size(); i++) {
                 if (content.get(i).equals("")) continue;
                 processWord(invertedIndex, document, content, i);
@@ -34,7 +34,7 @@ public class InvertedIndexBuilder {
         }
     }
 
-    private void processWord(HashMap<String, List<String[]>> invertedIndex, Document document, ArrayList<String> content, int i) {
+    private void processWord(HashMap<String, List<String[]>> invertedIndex, Document document, List<String> content, int i) {
         if (this.tokenize.check(content.get(i))) return;
         addOccurrence(content.get(i), new String[] {document.id, String.valueOf(i) }, invertedIndex);
     }

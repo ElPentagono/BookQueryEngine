@@ -4,31 +4,31 @@ import es.pentagono.invertedindex.Tokenizer;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class GutenbergTokenizer implements Tokenizer {
 
 
-    private static final List<String> stopwords;
+    private static final List<String> stopwords = loadStopwords();
 
-    static {
+    @Override
+    public List<String> tokenize(String content) {
+        return Collections.list(new StringTokenizer(content, " ")).stream()
+                .map(token -> (String) token)
+                .collect(Collectors.toList());
+    }
+
+    public static List<String> loadStopwords() {
         try {
-            stopwords = Files.readAllLines(Paths.get("stopwords/stopwords.txt"));
+            return Files.readAllLines(
+                    Paths.get(
+                            Objects.requireNonNull(Thread.currentThread().getContextClassLoader()
+                                    .getResource("stopwords.txt")).getPath()));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-
-    @Override
-    public ArrayList<String> tokenize(String content) {
-        return Stream.of(content.toLowerCase()
-                        .replaceAll("[\\p{Punct}[0-9]+_\t\n\\x0B\f\n\r-]", "") // TODO quotation marks
-                        .split(" "))
-                .collect(Collectors.toCollection(ArrayList<String>::new));
     }
 
     public boolean check(String word) {
