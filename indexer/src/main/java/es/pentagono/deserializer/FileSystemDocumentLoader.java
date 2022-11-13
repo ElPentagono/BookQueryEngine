@@ -16,25 +16,20 @@ public class FileSystemDocumentLoader implements DocumentLoader {
     @Override
     public Document load(String id) {
         try {
-            String path = String.format(System.getenv("DATALAKE") + "/documents/%s", id); // TODO
-            return new Document(id, getMetadata(path + "/metadata.json"), getContentOf(path + "/content.txt"));
+            String path = String.format(System.getenv("DATALAKE") + "/documents/%s", id);
+            return new Document(id, metadata(path + "/metadata.json"), content(path + "/content.txt"));
         }
         catch (Exception exception) {
-            throw exception;
+            throw new RuntimeException();
         }
-
     }
 
-    private Metadata getMetadata(String path) {
-        return builder.build(getContentOf(path));
+    private Metadata metadata(String path) throws IOException {
+        return builder.build(content(path));
     }
 
-    private String getContentOf(String path) {
-        try {
+    private String content(String path) throws IOException {
             return Files.readString(Paths.get(path));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
     }
 
 }

@@ -9,10 +9,10 @@ import java.util.*;
 
 public class InvertedIndexBuilder {
 
-    public final Tokenizer tokenize;
+    public final Tokenizer tokenizer;
 
     public InvertedIndexBuilder(Tokenizer tokenizer) {
-        this.tokenize = tokenizer;
+        this.tokenizer = tokenizer;
     }
 
     public InvertedIndex build(Document document) {
@@ -23,7 +23,7 @@ public class InvertedIndexBuilder {
 
     private void processDocument(HashMap<String, List<String[]>> invertedIndex, Document document) {
         try {
-            List<String> content = this.tokenize.tokenize(document.content);
+            List<String> content = this.tokenizer.tokenize(document.content);
             for (int i = 0; i < content.size(); i++) {
                 if (content.get(i).equals("")) continue;
                 processWord(invertedIndex, document, content, i);
@@ -34,7 +34,7 @@ public class InvertedIndexBuilder {
     }
 
     private void processWord(HashMap<String, List<String[]>> invertedIndex, Document document, List<String> content, int i) {
-        if (this.tokenize.check(content.get(i).toLowerCase())) return;
+        if (this.tokenizer.check(content.get(i).toLowerCase())) return;
         addOccurrence(content.get(i).toLowerCase(), new String[] {document.id, String.valueOf(i) }, invertedIndex);
     }
 

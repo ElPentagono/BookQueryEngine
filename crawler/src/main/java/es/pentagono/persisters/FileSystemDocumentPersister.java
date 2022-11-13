@@ -22,7 +22,7 @@ public class FileSystemDocumentPersister implements DocumentPersister {
     @Override
     public void persist(String event) {
         String path = String.format(System.getenv("DATALAKE"));
-        if (! Files.exists(Paths.get(path))) createLogFile(path);
+        if (! Files.exists(Paths.get(path + "/events/updates.log"))) createLogFile(path);
         writeEvent(path + "/events/updates.log", event);
     }
 
