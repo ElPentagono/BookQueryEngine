@@ -8,7 +8,7 @@
     <module name="indexer" />
     <extension name="coverage">
       <pattern>
-        <option name="PATTERN" value="es.pentagono.*" />
+        <option name="PATTERN" value="es.pentagono.metadatas.*" />
         <option name="ENABLED" value="true" />
       </pattern>
     </extension>
