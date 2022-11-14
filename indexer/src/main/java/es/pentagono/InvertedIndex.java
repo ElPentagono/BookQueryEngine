@@ -1,18 +1,20 @@
 package es.pentagono;
 
+import com.google.common.collect.Multimap;
+
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class InvertedIndex {
 
-    Map<String, List<String[]>> index;
-    public InvertedIndex(Map<String, List<String[]>> index) {
+    Multimap<String, String[]> index;
+    public InvertedIndex(Multimap<String, String[]> index) {
         this.index = index;
     }
     public List<String[]> lookupQuery(String word){
-        return this.index.get(word);
+        return new ArrayList<>(this.index.get(word));
     }
-    public Map<String, List<String[]>> getIndex(){
+    public Multimap<String, String[]> getIndex(){
         return this.index;
     }
 }
