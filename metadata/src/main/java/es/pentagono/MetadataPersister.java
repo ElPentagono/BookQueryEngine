@@ -1,5 +1,5 @@
 package es.pentagono;
 
 public interface MetadataPersister {
-    void persist(String Metadata);
+    void persist(String filename, String content);
 }

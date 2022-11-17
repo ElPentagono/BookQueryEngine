@@ -30,7 +30,7 @@ public class DatalakeMetadata implements Metadata {
         return this.language;
     }
 
-    public String ReleaseDate() {
+    public String releaseDate() {
         return this.releaseDate;
     }
 }

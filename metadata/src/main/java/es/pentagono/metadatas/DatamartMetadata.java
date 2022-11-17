@@ -7,14 +7,12 @@ public class DatamartMetadata implements Metadata {
     public String author;
     public String language;
     public String releaseDate;
-    public int words;
 
-    public DatamartMetadata(String title, String author, String language, String releaseDate, int words) {
+    public DatamartMetadata(String title, String author, String language, String releaseDate) {
         this.title = title;
         this.author = author;
         this.language = language;
         this.releaseDate = releaseDate;
-        this.words = words;
     }
 
     @Override
@@ -36,7 +34,4 @@ public class DatamartMetadata implements Metadata {
         return this.releaseDate;
     }
 
-    public int words() {
-        return this.words;
-    }
 }
