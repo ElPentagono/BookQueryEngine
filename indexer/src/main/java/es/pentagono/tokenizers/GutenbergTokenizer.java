@@ -16,12 +16,13 @@ public class GutenbergTokenizer implements Tokenizer {
 
     @Override
     public Map<String, List<Integer>> tokenize(Document document) {
-        String s = document.content.replaceAll("[\\p{Punct}[0-9]+_\t\n\\x0B\f\n\r-]", " ");
-        return processDocument(Collections.list(new StringTokenizer(s, " ")).stream()
+        String cleanContent = document.content.replaceAll("[\\p{Punct}[0-9]+_\t\n\\x0B\f\n\r-]", " ");
+        return processDocument(Collections.list(new StringTokenizer(cleanContent, " ")).stream()
                 .map(token -> (String) token)
                 .collect(Collectors.toList()));
     }
-    public static List<String> loadStopwords() {
+
+    private static List<String> loadStopwords() {
         try {
             URL stopwords = GutenbergTokenizer.class.getClassLoader().getResource("stopwords.txt");
             return Files.readAllLines(Path.of(stopwords.toURI()));
@@ -33,14 +34,14 @@ public class GutenbergTokenizer implements Tokenizer {
     private Map<String, List<Integer>> processDocument(List<String> content) {
         for (int i = 0; i < content.size(); i++) {
             if (content.get(i).equals("")) continue;
-            processWord(content, i);
+            processOccurrence(content, i);
         }
         return tokenizeContent;
     }
 
-    private void processWord(List<String> content, int i) {
-        if (check(content.get(i).toLowerCase())) return;
-        addOccurrence(content.get(i).toLowerCase(), i);
+    private void processOccurrence(List<String> content, int pos) {
+        if (check(content.get(pos).toLowerCase())) return;
+        addOccurrence(content.get(pos).toLowerCase(), pos);
     }
 
     private void addOccurrence(String word, int occurrence) {
@@ -53,7 +54,7 @@ public class GutenbergTokenizer implements Tokenizer {
     }
 
     private void createListOfOccurrences(String word, int occurrence) {
-        ArrayList<Integer> list = new ArrayList<>();
+        List<Integer> list = new ArrayList<>();
         list.add(occurrence);
         tokenizeContent.put(word, list);
     }
