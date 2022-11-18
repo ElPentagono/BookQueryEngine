@@ -13,7 +13,7 @@ public class MetadataDatamartPersister implements MetadataPersister {
     public void persist(String filename, String content) {
         try {
             createDatamartDirectory();
-            FileWriter writer = new FileWriter("C:/Users/Jose Juan/IdeaProjects/BookQueryEngine/datamarts/metadata/" + filename);
+            FileWriter writer = new FileWriter(System.getenv("DATAMART") + "/metadata/" + filename);
             writer.write(content);
             writer.close();
         } catch (IOException e) {
@@ -24,8 +24,8 @@ public class MetadataDatamartPersister implements MetadataPersister {
 
 
     private void createDatamartDirectory() {
-        if (!Files.exists(Paths.get("C:/Users/Jose Juan/IdeaProjects/BookQueryEngine/datamarts/metadata/")))
-            new File("C:/Users/Jose Juan/IdeaProjects/BookQueryEngine/datamarts/metadata/").mkdirs();
+        if (!Files.exists(Paths.get(System.getenv("DATAMART"))))
+            new File(System.getenv("DATAMART")).mkdirs();
     }
 
 }
