@@ -1,6 +1,5 @@
 package es.pentagono.tokenizers;
 
-import es.pentagono.Document;
 import es.pentagono.Tokenizer;
 
 import java.net.URL;
@@ -15,8 +14,8 @@ public class GutenbergTokenizer implements Tokenizer {
     private final Map<String, List<Integer>> tokenizeContent = new HashMap<>();
 
     @Override
-    public Map<String, List<Integer>> tokenize(Document document) {
-        String cleanContent = document.content.replaceAll("[\\p{Punct}[0-9]+_\t\n\\x0B\f\n\r-]", " ");
+    public Map<String, List<Integer>> tokenize(String content) {
+        String cleanContent = content.replaceAll("[\\p{Punct}[0-9]+_\t\n\\x0B\f\n\r-]", " ");
         return processDocument(Collections.list(new StringTokenizer(cleanContent, " ")).stream()
                 .map(token -> (String) token)
                 .collect(Collectors.toList()));

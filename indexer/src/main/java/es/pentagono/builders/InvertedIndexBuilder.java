@@ -25,7 +25,7 @@ public class InvertedIndexBuilder {
 
     private void processDocument(Multimap<String, String[]> invertedIndex, Document document) {
         try {
-            Map<String, List<Integer>> occurrences = (Map<String, List<Integer>>) this.tokenizer.tokenize(document.content);
+            Map<String, List<Integer>> occurrences = this.tokenizer.tokenize(document.content);
             for (Map.Entry<String, List<Integer>> occurrence : occurrences.entrySet())
                 addWordOccurence(invertedIndex, document, occurrence);
         } catch (IOException e) {
