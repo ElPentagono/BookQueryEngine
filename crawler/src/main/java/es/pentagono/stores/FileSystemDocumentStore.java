@@ -26,6 +26,4 @@ public class FileSystemDocumentStore implements DocumentStore {
     public void store(Event event) {
         Persister.persist(eventSerializer.serialize(event));
     }
-
-
 }

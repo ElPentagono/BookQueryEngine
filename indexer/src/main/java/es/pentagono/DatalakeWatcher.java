@@ -2,8 +2,10 @@ package es.pentagono;
 
 import es.pentagono.builders.InvertedIndexBuilder;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.*;
+import java.sql.Timestamp;
 
 public class DatalakeWatcher {
     private final Path DOCUMENTS = Paths.get(System.getenv("DATALAKE") + "/documents");
@@ -26,7 +28,12 @@ public class DatalakeWatcher {
     }
 
     private WatchKey registerDirectory() throws IOException {
+        createDirectory();
         return DOCUMENTS.register(watchService, StandardWatchEventKinds.ENTRY_CREATE);
+    }
+
+    private void createDirectory() {
+        if (!Files.exists(DOCUMENTS)) new File(String.valueOf(DOCUMENTS)).mkdirs();
     }
 
     @SuppressWarnings("InfiniteLoopStatement")
@@ -34,15 +41,21 @@ public class DatalakeWatcher {
         try {
             while (true) {
                 for (WatchEvent<?> event : key.pollEvents()) {
-                    String uuid = (String) event.context();
-                    Document document = loader.load(uuid);
-                    InvertedIndex invertedIndex = builder.build(document);
-                    store.store(invertedIndex);
+                    Document document = loadDocument(event);
+                    store.store(builder.build(document));
+                    store.store(new InvertedIndexEvent(
+                            new Timestamp(System.currentTimeMillis()),
+                            document.id));
                 }
                 key.reset();
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private Document loadDocument(WatchEvent<?> event) {
+        Path uuid = (Path) event.context();
+        return loader.load(uuid.toString());
     }
 }
