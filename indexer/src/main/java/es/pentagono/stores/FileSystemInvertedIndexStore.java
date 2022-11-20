@@ -6,12 +6,12 @@ import es.pentagono.InvertedIndexSerializer;
 import es.pentagono.InvertedIndexStore;
 
 public class FileSystemInvertedIndexStore implements InvertedIndexStore {
-    InvertedIndexPersister persister;
     InvertedIndexSerializer serializer;
+    InvertedIndexPersister persister;
 
-    public FileSystemInvertedIndexStore(InvertedIndexPersister invertedIndexPersister, InvertedIndexSerializer invertedIndexSerializer) {
-        this.persister = invertedIndexPersister;
+    public FileSystemInvertedIndexStore(InvertedIndexSerializer invertedIndexSerializer, InvertedIndexPersister invertedIndexPersister) {
         this.serializer = invertedIndexSerializer;
+        this.persister = invertedIndexPersister;
     }
 
     @Override
