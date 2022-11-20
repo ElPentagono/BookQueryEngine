@@ -1,21 +1,25 @@
 package es.pentagono.stores;
 
-import es.pentagono.InvertedIndex;
-import es.pentagono.InvertedIndexPersister;
-import es.pentagono.InvertedIndexSerializer;
-import es.pentagono.InvertedIndexStore;
+import es.pentagono.*;
 
 public class FileSystemInvertedIndexStore implements InvertedIndexStore {
-    InvertedIndexSerializer serializer;
-    InvertedIndexPersister persister;
+    private final InvertedIndexSerializer serializer;
+    private final EventSerializer eventSerializer;
+    private final InvertedIndexPersister persister;
 
-    public FileSystemInvertedIndexStore(InvertedIndexSerializer invertedIndexSerializer, InvertedIndexPersister invertedIndexPersister) {
+    public FileSystemInvertedIndexStore(InvertedIndexSerializer invertedIndexSerializer, EventSerializer eventSerializer, InvertedIndexPersister invertedIndexPersister) {
         this.serializer = invertedIndexSerializer;
+        this.eventSerializer = eventSerializer;
         this.persister = invertedIndexPersister;
     }
 
     @Override
     public void store(InvertedIndex invertedIndex) {
         persister.persist(serializer.serialize(invertedIndex));
+    }
+
+    @Override
+    public void store(Event event) {
+        persister.persist(eventSerializer.serialize(event));
     }
 }
