@@ -1,5 +1,5 @@
 package es.pentagono;
 
 public interface Store {
-    void store(Metadata metadata);
+    void store(Metadata metadata, String name);
 }
