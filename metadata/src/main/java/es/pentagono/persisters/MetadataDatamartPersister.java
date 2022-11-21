@@ -24,8 +24,8 @@ public class MetadataDatamartPersister implements MetadataPersister {
 
 
     private void createDatamartDirectory() {
-        if (!Files.exists(Paths.get(System.getenv("DATAMART"))))
-            new File(System.getenv("DATAMART")).mkdirs();
+        if (!Files.exists(Paths.get(System.getenv("DATAMART") + "/metadata")))
+            new File(System.getenv("DATAMART") + "/metadata").mkdirs();
     }
 
 }
