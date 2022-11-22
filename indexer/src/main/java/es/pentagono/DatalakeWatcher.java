@@ -1,30 +1,33 @@
 package es.pentagono;
 
-import es.pentagono.builders.InvertedIndexBuilder;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.*;
-import java.sql.Timestamp;
+import java.util.LinkedList;
+import java.util.List;
 
 public class DatalakeWatcher {
     private final Path DOCUMENTS = Paths.get(System.getenv("DATALAKE") + "/documents");
+    private final List<Observer> observers;
     private final WatchService watchService;
     private final WatchKey key;
-    private final DocumentLoader loader;
-    private final InvertedIndexBuilder builder;
-    private final InvertedIndexStore store;
 
-    public DatalakeWatcher(DocumentLoader documentLoader, InvertedIndexBuilder invertedIndexBuilder, InvertedIndexStore invertedIndexStore) {
+    public DatalakeWatcher() {
         try {
-            this.loader = documentLoader;
-            this.builder = invertedIndexBuilder;
-            this.store = invertedIndexStore;
+            observers = new LinkedList<>();
             this.watchService = FileSystems.getDefault().newWatchService();
             this.key = registerDirectory();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public void addObserver(Observer observer) {
+        observers.add(observer);
+    }
+
+    private void notifyObservers(String uuid) {
+        for (Observer observer : observers) observer.onSomething(uuid);
     }
 
     private WatchKey registerDirectory() throws IOException {
@@ -41,21 +44,12 @@ public class DatalakeWatcher {
         try {
             while (true) {
                 for (WatchEvent<?> event : key.pollEvents()) {
-                    Document document = loadDocument(event);
-                    store.store(builder.build(document));
-                    store.store(new InvertedIndexEvent(
-                            new Timestamp(System.currentTimeMillis()),
-                            document.id));
+                    key.reset();
+                    notifyObservers(((Path) event.context()).toString());
                 }
-                key.reset();
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-    }
-
-    private Document loadDocument(WatchEvent<?> event) {
-        Path uuid = (Path) event.context();
-        return loader.load(uuid.toString());
     }
 }
