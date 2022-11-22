@@ -7,25 +7,27 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class MetadataDatamartPersister implements MetadataPersister {
 
     public void persist(String filename, String content) {
         try {
-            if (existsInDatamart(filename)) return;
             createDatamartDirectory();
+            if (existsInDatamart(filename)) return;
             writeDatamartContent(filename, content);
             writeDatamartEvent(new StoreEvent(filename));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
     }
 
-    private boolean existsInDatamart(String filename) {
-        return new File("C:/Users/Jose Juan/IdeaProjects/BookQueryEngine/datamarts/metadata/content/" + filename)
-                .exists();
+    private boolean existsInDatamart(String filename) throws IOException {
+        Path path = Paths.get(System.getenv("DATAMART") + "/metadata/events/updates.log");
+        return Files.readAllLines(path).stream()
+                .map(line -> line.split(" ")[0])
+                .anyMatch(s -> s.contains(filename));
     }
 
     private void writeDatamartEvent(StoreEvent event) throws IOException {
@@ -40,7 +42,6 @@ public class MetadataDatamartPersister implements MetadataPersister {
         FileWriter writer = new FileWriter(System.getenv("DATAMART") + "/metadata/events/updates.log");
         writer.write("filename\tts");
         writer.close();
-
     }
 
     private void writeDatamartContent(String filename, String content) throws IOException {
