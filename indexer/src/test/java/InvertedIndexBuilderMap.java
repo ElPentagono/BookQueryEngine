@@ -1,29 +1,27 @@
-package es.pentagono.builders;
-
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Multimap;
 import es.pentagono.Document;
-import es.pentagono.InvertedIndex;
 import es.pentagono.Tokenizer;
+
 import java.io.IOException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
-public class InvertedIndexBuilder {
+public class InvertedIndexBuilderMap {
 
     public final Tokenizer tokenizer;
 
-    public InvertedIndexBuilder(Tokenizer tokenizer) {
+    public InvertedIndexBuilderMap(Tokenizer tokenizer) {
         this.tokenizer = tokenizer;
     }
 
-    public InvertedIndex build(Document document) {
-        Multimap<String, String[]> invertedIndex = ArrayListMultimap.create();
+    public InvertedIndexMap build(Document document) {
+        HashMap<String, List<String[]>> invertedIndex = new HashMap<>();
         processDocument(invertedIndex, document);
-        return new InvertedIndex(invertedIndex);
+        return new InvertedIndexMap(invertedIndex);
     }
 
-    private void processDocument(Multimap<String, String[]> invertedIndex, Document document) {
+    private void processDocument(HashMap<String, List<String[]>> invertedIndex, Document document) {
         try {
             Map<String, List<Integer>> occurrences = this.tokenizer.tokenize(document.content);
             for (Map.Entry<String, List<Integer>> occurrence : occurrences.entrySet())
@@ -33,9 +31,9 @@ public class InvertedIndexBuilder {
         }
     }
 
-    private static void addWordOccurence(Multimap<String, String[]> invertedIndex, Document document, Map.Entry<String, List<Integer>> occurrence) {
+    private static void addWordOccurence(Map<String, List<String[]>> invertedIndex, Document document, Map.Entry<String, List<Integer>> occurrence) {
         List<String[]> wordOccurences = addDocumentId(document, occurrence);
-        invertedIndex.putAll(occurrence.getKey(), wordOccurences);
+        invertedIndex.put(occurrence.getKey(), wordOccurences);
     }
 
     private static List<String[]> addDocumentId(Document document, Map.Entry<String, List<Integer>> occurrence) {
