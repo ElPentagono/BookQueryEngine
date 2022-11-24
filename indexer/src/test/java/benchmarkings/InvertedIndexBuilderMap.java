@@ -1,3 +1,5 @@
+package benchmarkings;
+
 import es.pentagono.Document;
 import es.pentagono.Tokenizer;
 
