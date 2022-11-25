@@ -16,7 +16,7 @@ public class GutenbergBookReader implements BookReader {
     private static final EventParser DownloadEventParser = new GutenbergDownloadEventParser();
 
     @Override
-    public DownloadEvent read(String url) throws IOException {
+    public DownloadEvent read(String url) {
         return (DownloadEvent) DownloadEventParser.parse(url, getBook(url));
     }
 
