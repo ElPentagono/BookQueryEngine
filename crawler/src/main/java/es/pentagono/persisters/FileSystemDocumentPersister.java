@@ -3,10 +3,13 @@ package es.pentagono.persisters;
 import es.pentagono.DocumentPersister;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+
+import static java.nio.file.StandardOpenOption.APPEND;
+import static java.nio.file.StandardOpenOption.CREATE;
 
 public class FileSystemDocumentPersister implements DocumentPersister {
     private static final String TSV_HEADER = "ts\tsrc\tuuid\tmd5\n";
@@ -37,9 +40,7 @@ public class FileSystemDocumentPersister implements DocumentPersister {
 
     private static void createFile(String file, String text) {
         try {
-            FileWriter writer = new FileWriter(file);
-            writer.write(text);
-            writer.close();
+            Files.write(Path.of(file), text.getBytes(), CREATE);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -47,9 +48,7 @@ public class FileSystemDocumentPersister implements DocumentPersister {
 
     private static void writeEvent(String path, String event) {
         try {
-            FileWriter writer = new FileWriter(path, true);
-            writer.write(event);
-            writer.close();
+            Files.write(Path.of(path), event.getBytes(), APPEND);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
