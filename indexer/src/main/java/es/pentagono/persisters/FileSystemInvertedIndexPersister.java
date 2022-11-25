@@ -3,70 +3,54 @@ package es.pentagono.persisters;
 import es.pentagono.InvertedIndexPersister;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
 
+import static java.nio.file.StandardOpenOption.APPEND;
+import static java.nio.file.StandardOpenOption.CREATE;
+
 public class FileSystemInvertedIndexPersister implements InvertedIndexPersister {
 
-    private final String TSV_HEADER = "ts\tuuid\n";
+    private static final String INDEX_HEADER = "id\tposition\n";
+    private static final String EVENTS_HEADER = "ts\tuuid\n";
 
     @Override
     public void persist(Map<String, String> invertedIndex) {
         for (String word : invertedIndex.keySet()) {
-            File file = new File(System.getenv("DATAMART") + "/invertedIndex/index/" + word.charAt(0) + "/" + word.substring(0,2));
-            createDirectoryWord(file.getAbsolutePath());
-            write(file.getAbsolutePath() + String.format("/%s", word), invertedIndex.get(word));
+            Path path = Path.of(System.getenv("DATAMART") + "/invertedIndex/index/" + word.charAt(0) + "/" + word.substring(0, 2));
+            createDirectory(path);
+            write(Paths.get(path.toString(), String.format("/%s", word)), INDEX_HEADER, invertedIndex.get(word));
         }
     }
 
     @Override
     public void persist(String event) {
-        String path = String.format(System.getenv("DATAMART"));
-        if (! Files.exists(Paths.get(path + "/invertedIndex/events/indexed.log"))) createLogFile(path + "/invertedIndex/events" );
-        writeEvent(path + "/invertedIndex/events/indexed.log", event);
+        Path path = Path.of(System.getenv("DATAMART") + "/invertedIndex/events");
+        createDirectory(path);
+        write(Paths.get(path.toString(), "/indexed.log"), EVENTS_HEADER, event);
     }
 
-    private void createDirectoryWord(String path) {
-        if (!Files.exists(Paths.get(path))) new File(path).mkdirs();
+    private void createDirectory(Path path) {
+        if (!Files.exists(path)) new File(path.toUri()).mkdirs();
     }
 
-    private static void write(String path, String content) {
+    private void write(Path path, String header, String content) {
         try {
-            if (!Files.exists(Paths.get(path))) createFile(path, "id\tposition");
-            FileWriter writer = new FileWriter(path, true);
-            writer.write(content);
-            writer.close();
+            if (!Files.exists(path)) createFile(path, header);
+            Files.write(path, content.getBytes(), APPEND);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private static void createFile(String path, String text) {
+    private void createFile(Path path, String text) {
         try {
-            FileWriter writer = new FileWriter(path, true);
-            writer.write(text);
-            writer.close();
+            Files.write(path, text.getBytes(), CREATE);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
-
-    private void createLogFile(String path) {
-        new File(path).mkdirs();
-        createFile(path + "/indexed.log", TSV_HEADER);
-    }
-
-    private void writeEvent(String path, String event) {
-        try {
-            FileWriter writer = new FileWriter(path, true);
-            writer.write(event);
-            writer.close();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
 }

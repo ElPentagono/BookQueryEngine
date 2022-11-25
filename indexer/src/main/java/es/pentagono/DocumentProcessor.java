@@ -15,7 +15,7 @@ public class DocumentProcessor implements Observer {
     }
 
     @Override
-    public void onSomething(String uuid) {
+    public void update(String uuid) {
         Document document = loader.load(uuid);
         store.store(builder.build(document));
         store.store(new InvertedIndexEvent(

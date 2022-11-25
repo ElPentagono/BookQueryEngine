@@ -8,19 +8,25 @@ import es.pentagono.serializers.TsvInvertedIndexSerializer;
 import es.pentagono.stores.FileSystemInvertedIndexStore;
 import es.pentagono.tokenizers.GutenbergTokenizer;
 
+import java.io.File;
+
 public class Main {
     public static void main(String[] args) {
-        DocumentProcessor processor = new DocumentProcessor(
+        DocumentProcessor docProcessor = new DocumentProcessor(
                 new FileSystemDocumentLoader(),
-                new InvertedIndexBuilder(new GutenbergTokenizer()),
+                new InvertedIndexBuilder(
+                        new GutenbergTokenizer()
+                ),
                 new FileSystemInvertedIndexStore(
                         new TsvInvertedIndexSerializer(),
                         new TsvEventSerializer(),
                         new FileSystemInvertedIndexPersister()
-        ));
-        new Updater(processor).update();
-        DatalakeWatcher watcher = new DatalakeWatcher();
-        watcher.addObserver(processor);
-        watcher.watch();
+                )
+        );
+        new Updater(docProcessor).update();
+        FileSystemEntityWatcher
+                .of(new File(System.getenv("DATALAKE") + "/documents")).
+                addObserver(docProcessor).
+                watch();
     }
 }

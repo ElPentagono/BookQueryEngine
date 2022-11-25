@@ -8,8 +8,8 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Updater {
-    private final String DOCUMENTS = System.getenv("DATALAKE") + "/documents";
-    private final String EVENTS = System.getenv("DATAMART") + "/invertedindex/events/indexed.log";
+    private static final String DOCUMENTS = System.getenv("DATALAKE") + "/documents";
+    private static final String EVENTS = System.getenv("DATAMART") + "/invertedindex/events/indexed.log";
     private static final List<String> UUIDS = new ArrayList<>();
     private final DocumentProcessor processor;
 
@@ -30,7 +30,7 @@ public class Updater {
 
     public void update() {
         if (!new File(DOCUMENTS).exists()) return;
-        for (String uuid : getUnprocessedDocuments()) processor.onSomething(uuid);
+        for (String uuid : getUnprocessedDocuments()) processor.update(uuid);
     }
 
     private List<String> getUnprocessedDocuments() {
