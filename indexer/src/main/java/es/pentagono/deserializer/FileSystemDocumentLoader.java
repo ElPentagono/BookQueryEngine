@@ -19,8 +19,8 @@ public class FileSystemDocumentLoader implements DocumentLoader {
             String path = String.format(System.getenv("DATALAKE") + "/documents/%s", id);
             return new Document(id, metadata(path + "/metadata.json"), content(path + "/content.txt"));
         }
-        catch (Exception exception) {
-            throw new RuntimeException();
+        catch (IOException exception) {
+            throw new RuntimeException(exception);
         }
     }
 
@@ -29,7 +29,7 @@ public class FileSystemDocumentLoader implements DocumentLoader {
     }
 
     private String content(String path) throws IOException {
-            return Files.readString(Paths.get(path));
+        return Files.readString(Paths.get(path));
     }
 
 }
