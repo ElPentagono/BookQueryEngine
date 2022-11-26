@@ -18,9 +18,10 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="crawler" />
         <module name="metadata" />
         <module name="indexer" />
+        <module name="webservice" />
+        <module name="crawler" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
