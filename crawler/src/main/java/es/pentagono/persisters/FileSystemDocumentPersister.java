@@ -2,7 +2,6 @@ package es.pentagono.persisters;
 
 import es.pentagono.DocumentPersister;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -12,43 +11,40 @@ import static java.nio.file.StandardOpenOption.APPEND;
 import static java.nio.file.StandardOpenOption.CREATE;
 
 public class FileSystemDocumentPersister implements DocumentPersister {
-    private final String TSV_HEADER = "ts\tsrc\tuuid\tmd5\n";
+
+    private static final String EVENTS_HEADER = "ts\tsrc\tuuid\tmd5\n";
+
     @Override
     public void persist(String id, String metadata, String content) {
-        String path = String.format(System.getenv("DATALAKE") + "/documents" + "/%s", id);
+        Path path = Path.of(String.format(System.getenv("DATALAKE") + "/documents" + "/%s", id));
         createDirectory(path);
-        createDirectory(System.getenv("DATALAKE") + "/events");
-        createFile(path + "/metadata.json", metadata);
-        createFile(path + "/content.txt", content);
+        write(Paths.get(path + "/content.txt"), "", content);
+        write(Paths.get(path + "/metadata.json"), "", metadata);
     }
 
     @Override
     public void persist(String event) {
-        String path = String.format(System.getenv("DATALAKE"));
-        if (! Files.exists(Paths.get(path + "/events/updates.log"))) createLogFile(path);
-        writeEvent(path + "/events/updates.log", event);
+        Path path = Path.of(System.getenv("DATALAKE") + "/events");
+        createDirectory(path);
+        write(Paths.get(path + "/updates.log"), EVENTS_HEADER, event);
     }
 
-    private void createDirectory(String path) {
-        if (!Files.exists(Paths.get(path))) new File(path).mkdirs();
+    private void createDirectory(Path path) {
+        if (!Files.exists(path)) path.toFile().mkdirs();
     }
 
-    private void createLogFile(String path) {
-        new File(path).mkdirs();
-        createFile(path + "/events/updates.log", TSV_HEADER);
-    }
-
-    private static void createFile(String file, String text) {
+    private void write(Path path, String header, String content) {
         try {
-            Files.write(Path.of(file), text.getBytes(), CREATE);
+            if (!Files.exists(path)) createFile(path, header);
+            Files.write(path, content.getBytes(), APPEND);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private static void writeEvent(String path, String event) {
+    private static void createFile(Path path, String text) {
         try {
-            Files.write(Path.of(path), event.getBytes(), APPEND);
+            Files.write(path, text.getBytes(), CREATE);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

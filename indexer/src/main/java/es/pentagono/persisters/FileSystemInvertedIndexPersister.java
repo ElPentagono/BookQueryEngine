@@ -2,7 +2,6 @@ package es.pentagono.persisters;
 
 import es.pentagono.InvertedIndexPersister;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -22,7 +21,7 @@ public class FileSystemInvertedIndexPersister implements InvertedIndexPersister 
         for (String word : invertedIndex.keySet()) {
             Path path = Path.of(System.getenv("DATAMART") + "/invertedIndex/index/" + word.charAt(0) + "/" + word.substring(0, 2));
             createDirectory(path);
-            write(Paths.get(path.toString(), String.format("/%s", word)), INDEX_HEADER, invertedIndex.get(word));
+            write(Paths.get(path + String.format("/%s", word)), INDEX_HEADER, invertedIndex.get(word));
         }
     }
 
@@ -30,11 +29,11 @@ public class FileSystemInvertedIndexPersister implements InvertedIndexPersister 
     public void persist(String event) {
         Path path = Path.of(System.getenv("DATAMART") + "/invertedIndex/events");
         createDirectory(path);
-        write(Paths.get(path.toString(), "/indexed.log"), EVENTS_HEADER, event);
+        write(Paths.get(path + "/indexed.log"), EVENTS_HEADER, event);
     }
 
     private void createDirectory(Path path) {
-        if (!Files.exists(path)) new File(path.toUri()).mkdirs();
+        if (!Files.exists(path)) path.toFile().mkdirs();
     }
 
     private void write(Path path, String header, String content) {
