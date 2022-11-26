@@ -148,3 +148,9 @@ just
 don
 should
 now
+con
+prn
+aux
+nul
+com
+lpt
