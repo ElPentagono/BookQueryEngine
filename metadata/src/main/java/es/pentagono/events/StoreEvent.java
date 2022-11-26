@@ -16,6 +16,6 @@ public class StoreEvent implements Event {
 
     @Override
     public String toString() {
-        return "\n" + filename + "\t" + ts.getNanos();
+        return "\n" + filename + "\t" + ts.getTime();
     }
 }

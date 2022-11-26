@@ -49,6 +49,7 @@ public class FileWatcher {
             try {
                 WatchKey key = watcher.take();
                 for (WatchEvent<?> event : key.pollEvents()) {
+                    Thread.sleep(50);
                     notifyListeners(event.context().toString());
                 }
                 key.reset();

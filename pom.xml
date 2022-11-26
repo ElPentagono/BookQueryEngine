@@ -12,6 +12,7 @@
         <module>crawler</module>
         <module>crawler</module>
         <module>metadata</module>
+        <module>webservice</module>
     </modules>
 
     <properties>
