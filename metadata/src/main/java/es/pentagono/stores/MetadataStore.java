@@ -1,9 +1,7 @@
 package es.pentagono.stores;
 
-import es.pentagono.Metadata;
-import es.pentagono.MetadataPersister;
-import es.pentagono.MetadataSerializer;
-import es.pentagono.Store;
+import es.pentagono.*;
+import es.pentagono.events.StoreEvent;
 
 public class MetadataStore implements Store {
     public MetadataPersister persister;
@@ -18,5 +16,6 @@ public class MetadataStore implements Store {
     @Override
     public void store(Metadata metadata, String uuid) {
         persister.persist(uuid, serializer.serialize(metadata));
+        persister.persist(new StoreEvent(uuid));
     }
 }

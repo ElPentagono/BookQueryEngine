@@ -1,61 +1,74 @@
 package es.pentagono.persisters;
 
+import es.pentagono.Event;
 import es.pentagono.MetadataPersister;
 import es.pentagono.events.StoreEvent;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+
+import static java.nio.file.StandardOpenOption.APPEND;
+import static java.nio.file.StandardOpenOption.CREATE;
 
 public class MetadataDatamartPersister implements MetadataPersister {
+
+    public static final String DATAMART = System.getenv("DATAMART");
+    public static final String LOG_HEADER = "filename\tts";
 
     public void persist(String filename, String content) {
         try {
             createDatamartDirectory();
             if (existsInDatamart(filename)) return;
-            writeDatamartContent(filename, content);
-            writeDatamartEvent(new StoreEvent(filename));
+            write(Paths.get(DATAMART + "/metadata/content/" + filename), content, CREATE);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
+    @Override
+    public void persist(Event event) {
+        try {
+            write(Paths.get(DATAMART + "/metadata/events/updates.log"), new StoreEvent(((StoreEvent) event).filename).toString(), APPEND);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
     private boolean existsInDatamart(String filename) throws IOException {
-        Path path = Paths.get(System.getenv("DATAMART") + "/metadata/events/updates.log");
-        return Files.readAllLines(path).stream()
+        return Files.readAllLines(Paths.get(DATAMART + "/metadata/events/updates.log")).stream()
                 .map(line -> line.split(" ")[0])
                 .anyMatch(s -> s.contains(filename));
     }
 
-    private void writeDatamartEvent(StoreEvent event) throws IOException {
-        if (!Files.exists(Paths.get(System.getenv("DATAMART") + "/metadata/events/updates.log")))
-            addHeaderToStoreEvent();
-        FileWriter writer = new FileWriter(System.getenv("DATAMART") + "/metadata/events/updates.log", true);
-        writer.write("\n" + event.filename + "\t" + event.ts.getNanos());
-        writer.close();
-    }
-
-    private void addHeaderToStoreEvent() throws IOException {
-        FileWriter writer = new FileWriter(System.getenv("DATAMART") + "/metadata/events/updates.log");
-        writer.write("filename\tts");
-        writer.close();
-    }
-
-    private void writeDatamartContent(String filename, String content) throws IOException {
-        FileWriter writer = new FileWriter(System.getenv("DATAMART") + "/metadata/content/" + filename);
-        writer.write(content);
-        writer.close();
-    }
-
-
     private void createDatamartDirectory() throws IOException {
-        if (!Files.exists(Paths.get(System.getenv("DATAMART") + "/metadata"))) {
-            new File(System.getenv("DATAMART") + "/metadata/content").mkdirs();
-            new File(System.getenv("DATAMART") + "/metadata/events").mkdirs();
+        if (exist(DATAMART + "/metadata")) {
+            createDirectory(DATAMART + "/metadata/content");
+            createDirectory(DATAMART + "/metadata/events");
+            addHeaderStoreEventFile();
         }
     }
+
+    private static void write(Path path, String text, StandardOpenOption option) throws IOException {
+        Files.write(path, text.getBytes(), option);
+    }
+
+    private static boolean exist(String file) {
+        return !Files.exists(Paths.get(file));
+    }
+
+    private void addHeaderStoreEventFile() throws IOException {
+        write(Paths.get(DATAMART + "/metadata/events/updates.log"), LOG_HEADER, CREATE);
+    }
+
+    private void createDirectory(String path) {
+        new File(path).mkdirs();
+    }
+
+
 
 }
