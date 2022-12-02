@@ -10,7 +10,7 @@ import static java.nio.file.StandardWatchEventKinds.ENTRY_MODIFY;
 
 public class FileSystemEntityWatcher {
 
-    private static final List<Observer> observers = new ArrayList<>();
+    private static final List<Listener> listeners = new ArrayList<>();
     private static WatchService watchService;
     private static WatchKey key;
     private final File file;
@@ -29,8 +29,8 @@ public class FileSystemEntityWatcher {
         }
     }
 
-    public FileSystemEntityWatcher addObserver(Observer observer) {
-        observers.add(observer);
+    public FileSystemEntityWatcher addListener(Listener listener) {
+        listeners.add(listener);
         return this;
     }
 
@@ -40,7 +40,7 @@ public class FileSystemEntityWatcher {
             while (true) {
                 for (WatchEvent<?> event : key.pollEvents()) {
                     key.reset();
-                    notifyObservers(((Path) event.context()).toString());
+                    notifyListeners(((Path) event.context()).toString());
                 }
             }
         } catch (Exception e) {
@@ -57,7 +57,7 @@ public class FileSystemEntityWatcher {
         if (!Files.exists(this.file.toPath())) new File(String.valueOf(this.file)).mkdirs();
     }
 
-    private void notifyObservers(String uuid) {
-        for (Observer observer : observers) observer.update(uuid);
+    private void notifyListeners(String uuid) {
+        for (Listener listener : listeners) listener.change(uuid);
     }
 }
