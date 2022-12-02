@@ -4,7 +4,7 @@ import es.pentagono.builders.InvertedIndexBuilder;
 
 import java.sql.Timestamp;
 
-public class DocumentProcessor implements Observer {
+public class DocumentProcessor {
     private final DocumentLoader loader;
     private final InvertedIndexBuilder builder;
     private final InvertedIndexStore store;
@@ -13,9 +13,7 @@ public class DocumentProcessor implements Observer {
         this.builder = builder;
         this.store = store;
     }
-
-    @Override
-    public void update(String uuid) {
+    public void process(String uuid) {
         Document document = loader.load(uuid);
         store.store(builder.build(document));
         store.store(new InvertedIndexEvent(
