@@ -15,16 +15,17 @@ public class DocumentWordsCommand implements Command {
     @Override
     public String execute(Map<String, String> parameters) {
         String[] split = parameters.get(":words").split("\\+");
+
         return Arrays.stream(split)
                 .map(DocumentWordsCommand::toPath)
-                .map(path -> getLines(path))
+                .map(DocumentWordsCommand::getLines)
                 .collect(Collectors.toList()).toString();
     }
 
     private static List<String> getLines(Path path) {
         try {
             if (!Files.exists(path))
-                return List.of(path.getFileName().toString() + "does not exist");
+                return List.of(path.getFileName().toString() + " does not exist");
             return Files.readAllLines(path);
         } catch (IOException e) {
             throw new RuntimeException(e);
