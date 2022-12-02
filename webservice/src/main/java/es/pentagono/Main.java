@@ -1,7 +1,14 @@
 package es.pentagono;
 
+import es.pentagono.commands.DocumentWordsCommand;
+
+import java.util.Map;
+
 public class Main {
     public static void main(String[] args) {
-        System.out.println("Hello World");
+        WebService webService = new WebService();
+        webService.add("/stats/:words", new DocumentWordsCommand());
+        webService.start();
     }
+
 }
