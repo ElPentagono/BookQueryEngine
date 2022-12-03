@@ -12,7 +12,7 @@ import static java.nio.file.StandardOpenOption.CREATE;
 
 public class FileSystemDocumentPersister implements DocumentPersister {
 
-    private static final String EVENTS_HEADER = "ts\tsrc\tuuid\tmd5\n";
+    private static final String EVENTS_HEADER = "ts\tsrc\tuuid\tmd5";
 
     @Override
     public void persist(String id, String metadata, String content) {

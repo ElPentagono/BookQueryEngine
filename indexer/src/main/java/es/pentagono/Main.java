@@ -26,7 +26,7 @@ public class Main {
         new Updater(docProcessor).update();
         FileSystemEntityWatcher
                 .of(new File(System.getenv("DATALAKE") + "/documents")).
-                addObserver(docProcessor).
+                addListener(docProcessor::process).
                 watch();
     }
 }

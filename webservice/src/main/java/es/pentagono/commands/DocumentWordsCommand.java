@@ -8,8 +8,10 @@ import es.pentagono.deserializers.GsonMetadataDeserializer;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.*;
-import java.util.regex.Pattern;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class DocumentWordsCommand implements Command {
@@ -23,22 +25,44 @@ public class DocumentWordsCommand implements Command {
                 .map(DocumentWordsCommand::toPath)
                 .map(DocumentWordsCommand::getLines)
                 .map(lines -> filterTo(lines, parameters.getOrDefault("to", null)))
-                .map(lines -> filterFrom(lines, parameters))
-                .map(lines -> filterAuthor(lines, parameters))
+                .map(lines -> filterFrom(lines, parameters.getOrDefault("from", null)))
+                .map(lines -> filterAuthor(lines, parameters.getOrDefault("author", null)))
                 .collect(Collectors.toList()).toString();
     }
 
-    private List<String> filterAuthor(List<String> lines, Map<String, String> parameters) {
-        return null;
+    private List<String> filterAuthor(List<String> lines, String parameter) {
+        if (parameter == null) return lines;
+        return lines.stream()
+                .filter(line -> {
+                    Metadata metadata = getMetadata(line.split("\t")[0]);
+                    if (metadata.author.isBlank()) return false;
+                    String author = metadata.author;
+                    return author.equals(parameter);})
+                .collect(Collectors.toList());
     }
 
-    private List<String> filterFrom(List<String> lines, Map<String, String> parameters) {
-        return null;
+    private List<String> filterFrom(List<String> lines, String parameter) {
+        if (parameter == null) return lines;
+        return lines.stream()
+                .filter(line -> {
+                    Metadata metadata = getMetadata(line.split("\t")[0]);
+                    if (metadata.releaseDate.equals("Unknown")) return false;
+                    String[] date = metadata.releaseDate.split(" ");
+                    int year = Integer.parseInt(date[date.length-1]);
+                    return year >= Integer.parseInt(parameter);})
+                .collect(Collectors.toList());
     }
 
     private List<String> filterTo(List<String> lines, String parameter) {
         if (parameter == null) return lines;
-        return null;
+        return lines.stream()
+                .filter(line -> {
+                    Metadata metadata = getMetadata(line.split("\t")[0]);
+                    if (metadata.releaseDate.equals("Unknown")) return false;
+                    String[] date = metadata.releaseDate.split(" ");
+                    int year = Integer.parseInt(date[date.length-1]);
+                    return year <= Integer.parseInt(parameter);})
+                .collect(Collectors.toList());
     }
 
 

@@ -1,11 +1,11 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="MetadataMain" type="Application" factoryName="Application">
+  <configuration default="false" name="WebService" type="Application" factoryName="Application">
     <envs>
       <env name="DATALAKE" value="$PROJECT_DIR$/datalake" />
       <env name="DATAMART" value="$PROJECT_DIR$/datamarts" />
     </envs>
     <option name="MAIN_CLASS_NAME" value="es.pentagono.Main" />
-    <module name="metadata" />
+    <module name="webservice" />
     <extension name="coverage">
       <pattern>
         <option name="PATTERN" value="es.pentagono.*" />

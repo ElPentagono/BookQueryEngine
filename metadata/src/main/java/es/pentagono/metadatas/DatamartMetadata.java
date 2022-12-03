@@ -30,7 +30,8 @@ public class DatamartMetadata implements Metadata {
         return this.language;
     }
 
-    public String ReleaseDate() {
+    @Override
+    public String releaseDate() {
         return this.releaseDate;
     }
 

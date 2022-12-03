@@ -6,6 +6,7 @@ import es.pentagono.metadatas.DatamartMetadata;
 import es.pentagono.persisters.MetadataDatamartPersister;
 import es.pentagono.readers.FSMetadataReader;
 import es.pentagono.serializers.JsonMetadataSerializer;
+import es.pentagono.stores.MetadataSqlStore;
 import es.pentagono.stores.MetadataStore;
 
 import java.io.File;
@@ -16,7 +17,7 @@ import java.util.Objects;
 public class Main {
     public static void main(String[] args) throws IOException {
         GsonMetadataDeserializer deserializer = new GsonMetadataDeserializer();
-        MetadataStore store = new MetadataStore(new MetadataDatamartPersister(), new JsonMetadataSerializer());
+        Store store = new MetadataSqlStore();
         File file = new File(System.getenv("DATALAKE") + "/documents");
         Arrays.stream(Objects.requireNonNull(file.listFiles())).forEach(filename -> {
             DatalakeMetadata metadata = (DatalakeMetadata) new FSMetadataReader(deserializer).read(filename.getName());

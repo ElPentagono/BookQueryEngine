@@ -30,7 +30,7 @@ public class Updater {
 
     public void update() {
         if (!new File(DOCUMENTS).exists()) return;
-        for (String uuid : getUnprocessedDocuments()) processor.update(uuid);
+        for (String uuid : getUnprocessedDocuments()) processor.process(uuid);
     }
 
     private List<String> getUnprocessedDocuments() {
