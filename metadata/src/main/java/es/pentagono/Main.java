@@ -30,7 +30,6 @@ public class Main {
                     ),
                     filename.getName()
             );
-
         });
 
         FileWatcher.of(file).add((String f) -> {

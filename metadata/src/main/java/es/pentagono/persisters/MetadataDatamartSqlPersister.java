@@ -12,6 +12,7 @@ import java.nio.file.StandardOpenOption;
 import java.sql.*;
 
 import static java.nio.file.StandardOpenOption.APPEND;
+import static java.nio.file.StandardOpenOption.CREATE;
 
 public class MetadataDatamartSqlPersister implements MetadataPersister {
 
@@ -37,11 +38,32 @@ public class MetadataDatamartSqlPersister implements MetadataPersister {
     @Override
     public void persist(Event event) {
         try {
+            createDatamartDirectory();
             write(Paths.get(DATAMART + "/metadata/events/updates.log"), new StoreEvent(((StoreEvent) event).filename).toString(), APPEND);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
+
+    private void createDatamartDirectory() throws IOException {
+        if (notExist(DATAMART + "/metadata")) {
+            createDirectory(Path.of(DATAMART + "/metadata/events"));
+            addHeaderStoreEventFile();
+        }
+    }
+
+    private void createDirectory(Path path) {
+        if (!Files.exists(path)) path.toFile().mkdirs();
+    }
+
+    private static boolean notExist(String file) {
+        return !Files.exists(Paths.get(file));
+    }
+
+    private void addHeaderStoreEventFile() throws IOException {
+        write(Paths.get(DATAMART + "/metadata/events/updates.log"), LOG_HEADER, CREATE);
+    }
+
 
     private void createTable() {
         String sql = "CREATE TABLE IF NOT EXISTS metadata (\n"

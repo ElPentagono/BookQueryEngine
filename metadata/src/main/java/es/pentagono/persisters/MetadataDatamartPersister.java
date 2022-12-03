@@ -46,7 +46,7 @@ public class MetadataDatamartPersister implements MetadataPersister {
     }
 
     private void createDatamartDirectory() throws IOException {
-        if (exist(DATAMART + "/metadata")) {
+        if (notExist(DATAMART + "/metadata")) {
             createDirectory(DATAMART + "/metadata/content");
             createDirectory(DATAMART + "/metadata/events");
             addHeaderStoreEventFile();
@@ -57,7 +57,7 @@ public class MetadataDatamartPersister implements MetadataPersister {
         Files.write(path, text.getBytes(), option);
     }
 
-    private static boolean exist(String file) {
+    private static boolean notExist(String file) {
         return !Files.exists(Paths.get(file));
     }
 
