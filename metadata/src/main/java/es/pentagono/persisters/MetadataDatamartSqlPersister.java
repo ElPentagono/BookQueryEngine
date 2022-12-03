@@ -26,6 +26,7 @@ public class MetadataDatamartSqlPersister implements MetadataPersister {
     @Override
     public void persist(String filename, String content) {
         try {
+            createDatamartDirectory();
             Class.forName("org.sqlite.JDBC");
             if (existsInDatamart(filename)) return;
             createTable();
@@ -38,7 +39,7 @@ public class MetadataDatamartSqlPersister implements MetadataPersister {
     @Override
     public void persist(Event event) {
         try {
-            createDatamartDirectory();
+            if (existsInDatamart(((StoreEvent) event).filename)) return;
             write(Paths.get(DATAMART + "/metadata/events/updates.log"), new StoreEvent(((StoreEvent) event).filename).toString(), APPEND);
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -99,9 +100,9 @@ public class MetadataDatamartSqlPersister implements MetadataPersister {
     }
 
     private boolean existsInDatamart(String filename) throws IOException {
-        if (!Files.exists(Path.of(filename))) return false;
+        if (notExist(DATAMART + "/metadata/events/updates.log")) return false;
         return Files.readAllLines(Paths.get(DATAMART + "/metadata/events/updates.log")).stream()
-                .map(line -> line.split(" ")[0])
+                .map(line -> line.split("\t")[0])
                 .anyMatch(s -> s.contains(filename));
     }
 }
