@@ -13,7 +13,7 @@ import static java.nio.file.StandardOpenOption.CREATE;
 
 public class FileSystemInvertedIndexPersister implements InvertedIndexPersister {
 
-    private static final String INDEX_HEADER = "id\tposition\n";
+    private static final String INDEX_HEADER = "id\tposition";
     private static final String EVENTS_HEADER = "ts\tuuid\n";
 
     @Override
