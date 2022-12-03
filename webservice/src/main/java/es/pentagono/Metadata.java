@@ -13,20 +13,4 @@ public class Metadata {
         this.language = language;
         this.releaseDate = releaseDate;
     }
-
-    public String title() {
-        return this.title;
-    }
-
-    public String author() {
-        return this.author;
-    }
-
-    public String language() {
-        return this.language;
-    }
-
-    public String ReleaseDate() {
-        return this.releaseDate;
-    }
 }

@@ -15,6 +15,5 @@ public class Main {
                 .from(new GutenbergSource())
                 .into(new FileSystemDocumentStore(new JsonMetadataSerializer(), new TsvEventSerializer())));
         scheduler.start();
-        System.out.println("termino");
     }
 }
