@@ -7,7 +7,6 @@ import es.pentagono.MetadataDeserializer;
 public class GsonMetadataDeserializer implements MetadataDeserializer {
     @Override
     public Metadata deserialize(String metadata) {
-        Gson gson = new Gson();
-        return gson.fromJson(metadata, Metadata.class);
+        return new Gson().fromJson(metadata, Metadata.class);
     }
 }

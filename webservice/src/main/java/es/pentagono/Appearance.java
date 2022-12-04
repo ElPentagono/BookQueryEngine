@@ -1,16 +1,15 @@
 package es.pentagono;
 
 public class Appearance {
-    public final String uuid;
+    private transient final String uuid;
+    public final String document;
+    public final String word;
     public final String position;
 
-    public Appearance(String[] values) {
-        this.uuid = values[0];
-        this.position = values[1];
-    }
-
-    public Appearance(String uuid, String position) {
+    public Appearance(String uuid, String document, String word, String position) {
         this.uuid = uuid;
+        this.document = document;
+        this.word = word;
         this.position = position;
     }
 }
