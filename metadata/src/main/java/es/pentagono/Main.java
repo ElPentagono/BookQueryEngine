@@ -16,7 +16,7 @@ public class Main {
         GsonMetadataDeserializer deserializer = new GsonMetadataDeserializer();
         Store store = new SQLMetadataStore();
         File file = new File(System.getenv("DATALAKE") + "/documents");
-        Arrays.stream(Objects.requireNonNull(file.listFiles())).forEach(filename -> {
+        Arrays.stream(file.listFiles()).forEach(filename -> {
             DatalakeMetadata metadata = (DatalakeMetadata) new FSMetadataReader(deserializer).read(filename.getName());
             store.store(
                     new DatamartMetadata(
