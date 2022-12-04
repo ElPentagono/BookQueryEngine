@@ -1,9 +1,6 @@
 package es.pentagono.commands;
 
-import es.pentagono.Appearance;
-import es.pentagono.AppearanceSerializer;
-import es.pentagono.Command;
-import es.pentagono.MetadataDeserializer;
+import es.pentagono.*;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -17,38 +14,39 @@ public class DocumentWordsCommand implements Command {
 
     private final MetadataDeserializer deserializer;
     private final AppearanceSerializer serializer;
+    private final MetadataLoader loader;
 
-    public DocumentWordsCommand(MetadataDeserializer deserializer, AppearanceSerializer serializer) {
+    public DocumentWordsCommand(MetadataDeserializer deserializer, AppearanceSerializer serializer, MetadataLoader loader) {
         this.deserializer = deserializer;
         this.serializer = serializer;
+        this.loader = loader;
     }
 
     @Override
     public String execute(Map<String, String> parameters) {
-        return "{\"count\":" +
-                Arrays.stream(parameters.get(":words").split("\\+")).parallel()
-                        .map(DocumentWordsCommand::toPath)
-                        .map(DocumentWordsCommand::getLines)
-                        .mapToLong(List::size)
-                        .sum() +
-                ", \"appearances\": [" +
-                Arrays.stream(parameters.get(":words").split("\\+")).parallel()
-                        .map(DocumentWordsCommand::toPath)
-                        .map(DocumentWordsCommand::getLines)
-                        .flatMap(List::stream)
-                        .map(s-> new Appearance(s.split("\t")[0], bookTitle(s.split("\t")[0]),  s.split("\t")[2], s.split("\t")[1]))
-                        .map(serializer::serialize)
-                        .collect(Collectors.joining(","))
-                + "]}";
+        return "{\"count\":" + countAppearances(parameters) + ",\"appearances\":[" + getAppearances(parameters) + "]}";
+    }
 
+    private String getAppearances(Map<String, String> parameters) {
+        return Arrays.stream(parameters.get(":words").split("\\+")).parallel()
+                .map(DocumentWordsCommand::toPath)
+                .map(DocumentWordsCommand::getLines)
+                .flatMap(List::stream)
+                .map(s -> new Appearance(s.split("\t")[0], bookTitle(s.split("\t")[0]), s.split("\t")[2], s.split("\t")[1]))
+                .map(serializer::serialize)
+                .collect(Collectors.joining(","));
+    }
+
+    private static long countAppearances(Map<String, String> parameters) {
+        return Arrays.stream(parameters.get(":words").split("\\+")).parallel()
+                .map(DocumentWordsCommand::toPath)
+                .map(DocumentWordsCommand::getLines)
+                .mapToLong(List::size)
+                .sum();
     }
 
     private String bookTitle(String uuid) {
-        try {
-            return deserializer.deserialize(Files.readString(Path.of(System.getenv("DATAMART") + "/metadata/content/" + uuid))).title;
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return loader.load(uuid).title;
     }
 
     private static List<String> getLines(Path path) {

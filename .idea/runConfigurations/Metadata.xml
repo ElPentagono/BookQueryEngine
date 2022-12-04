@@ -8,7 +8,7 @@
     <module name="metadata" />
     <extension name="coverage">
       <pattern>
-        <option name="PATTERN" value="es.pentagono.*" />
+        <option name="PATTERN" value="es.pentagono.managers.*" />
         <option name="ENABLED" value="true" />
       </pattern>
     </extension>
