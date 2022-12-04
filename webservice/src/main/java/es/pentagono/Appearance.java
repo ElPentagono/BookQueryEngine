@@ -8,4 +8,9 @@ public class Appearance {
         this.uuid = values[0];
         this.position = values[1];
     }
+
+    public Appearance(String uuid, String position) {
+        this.uuid = uuid;
+        this.position = position;
+    }
 }

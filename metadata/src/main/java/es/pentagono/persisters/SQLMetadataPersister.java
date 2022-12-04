@@ -14,13 +14,13 @@ import java.sql.*;
 import static java.nio.file.StandardOpenOption.APPEND;
 import static java.nio.file.StandardOpenOption.CREATE;
 
-public class MetadataDatamartSqlPersister implements MetadataPersister {
+public class SQLMetadataPersister implements MetadataPersister {
 
     private final static String url = "jdbc:sqlite:" + System.getenv("DATAMART") + "/metadata/content.db";
     private static final String DATAMART = System.getenv("DATAMART");
     private static final String LOG_HEADER = "filename\tts";
 
-    public MetadataDatamartSqlPersister() {
+    public SQLMetadataPersister() {
     }
 
     @Override

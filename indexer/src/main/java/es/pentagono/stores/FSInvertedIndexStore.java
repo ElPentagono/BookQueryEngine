@@ -2,12 +2,12 @@ package es.pentagono.stores;
 
 import es.pentagono.*;
 
-public class FileSystemInvertedIndexStore implements InvertedIndexStore {
+public class FSInvertedIndexStore implements InvertedIndexStore {
     private final InvertedIndexSerializer serializer;
     private final EventSerializer eventSerializer;
     private final InvertedIndexPersister persister;
 
-    public FileSystemInvertedIndexStore(InvertedIndexSerializer invertedIndexSerializer, EventSerializer eventSerializer, InvertedIndexPersister invertedIndexPersister) {
+    public FSInvertedIndexStore(InvertedIndexSerializer invertedIndexSerializer, EventSerializer eventSerializer, InvertedIndexPersister invertedIndexPersister) {
         this.serializer = invertedIndexSerializer;
         this.eventSerializer = eventSerializer;
         this.persister = invertedIndexPersister;

@@ -5,16 +5,16 @@ import es.pentagono.MetadataPersister;
 import es.pentagono.MetadataSerializer;
 import es.pentagono.Store;
 import es.pentagono.events.StoreEvent;
-import es.pentagono.persisters.MetadataDatamartSqlPersister;
+import es.pentagono.persisters.SQLMetadataPersister;
 import es.pentagono.serializers.SQLMetadataSerializer;
 
-public class MetadataSqlStore implements Store {
+public class SQLMetadataStore implements Store {
     public MetadataSerializer serializer;
     public MetadataPersister persister;
 
-    public MetadataSqlStore() {
+    public SQLMetadataStore() {
         this.serializer = new SQLMetadataSerializer();
-        this.persister = new MetadataDatamartSqlPersister();
+        this.persister = new SQLMetadataPersister();
     }
 
     @Override

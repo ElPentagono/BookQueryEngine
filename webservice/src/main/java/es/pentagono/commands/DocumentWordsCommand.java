@@ -37,8 +37,9 @@ public class DocumentWordsCommand implements Command {
                         .map(serializer::serialize)
                         .collect(Collectors.joining(","))
                 + "]}";
-
     }
+
+
     private static List<String> getLines(Path path) {
         try {
             if (!Files.exists(path)) return List.of(path.getFileName().toString() + " does not exist");

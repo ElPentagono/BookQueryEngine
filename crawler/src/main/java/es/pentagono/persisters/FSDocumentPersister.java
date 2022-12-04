@@ -1,35 +1,32 @@
 package es.pentagono.persisters;
 
-import es.pentagono.InvertedIndexPersister;
+import es.pentagono.DocumentPersister;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Map;
 
 import static java.nio.file.StandardOpenOption.APPEND;
 import static java.nio.file.StandardOpenOption.CREATE;
 
-public class FileSystemInvertedIndexPersister implements InvertedIndexPersister {
+public class FSDocumentPersister implements DocumentPersister {
 
-    private static final String INDEX_HEADER = "id\tposition";
-    private static final String EVENTS_HEADER = "ts\tuuid\n";
+    private static final String EVENTS_HEADER = "ts\tsrc\tuuid\tmd5";
 
     @Override
-    public void persist(Map<String, String> invertedIndex) {
-        for (String word : invertedIndex.keySet()) {
-            Path path = Path.of(System.getenv("DATAMART") + "/invertedIndex/index/" + word.charAt(0) + "/" + word.substring(0, 2));
-            createDirectory(path);
-            write(Paths.get(path + String.format("/%s", word)), INDEX_HEADER, invertedIndex.get(word));
-        }
+    public void persist(String id, String metadata, String content) {
+        Path path = Path.of(String.format(System.getenv("DATALAKE") + "/documents" + "/%s", id));
+        createDirectory(path);
+        write(Paths.get(path + "/content.txt"), "", content);
+        write(Paths.get(path + "/metadata.json"), "", metadata);
     }
 
     @Override
     public void persist(String event) {
-        Path path = Path.of(System.getenv("DATAMART") + "/invertedIndex/events");
+        Path path = Path.of(System.getenv("DATALAKE") + "/events");
         createDirectory(path);
-        write(Paths.get(path + "/indexed.log"), EVENTS_HEADER, event);
+        write(Paths.get(path + "/updates.log"), EVENTS_HEADER, event);
     }
 
     private void createDirectory(Path path) {
@@ -45,7 +42,7 @@ public class FileSystemInvertedIndexPersister implements InvertedIndexPersister 
         }
     }
 
-    private void createFile(Path path, String text) {
+    private static void createFile(Path path, String text) {
         try {
             Files.write(path, text.getBytes(), CREATE);
         } catch (IOException e) {
