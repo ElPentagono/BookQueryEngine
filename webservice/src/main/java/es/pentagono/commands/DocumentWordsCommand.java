@@ -12,14 +12,12 @@ import java.util.stream.Collectors;
 
 public class DocumentWordsCommand implements Command {
 
-    private final MetadataDeserializer deserializer;
-    private final AppearanceSerializer serializer;
     private final MetadataLoader loader;
+    private final AppearanceSerializer serializer;
 
-    public DocumentWordsCommand(MetadataDeserializer deserializer, AppearanceSerializer serializer, MetadataLoader loader) {
-        this.deserializer = deserializer;
-        this.serializer = serializer;
+    public DocumentWordsCommand(MetadataLoader loader, AppearanceSerializer serializer) {
         this.loader = loader;
+        this.serializer = serializer;
     }
 
     @Override
@@ -27,26 +25,37 @@ public class DocumentWordsCommand implements Command {
         return "{\"count\":" + countAppearances(parameters) + ",\"appearances\":[" + getAppearances(parameters) + "]}";
     }
 
+    private long countAppearances(Map<String, String> parameters) {
+        return Arrays.stream(parameters.get(":words").split("\\+")).parallel()
+                .map(DocumentWordsCommand::toPath)
+                .map(DocumentWordsCommand::getLines)
+                .flatMap(List::stream)
+                .map(s -> new Appearance(s.split("\t")[0], getMetadata(s.split("\t")[0]), s.split("\t")[2], s.split("\t")[1]))
+                .filter(a -> parameters.get("author") == null || a.metadata.author.equals(parameters.get("author")))
+                .filter(a -> parameters.get("to")==null || Integer.parseInt(a.metadata.releaseDate.substring(a.metadata.releaseDate.length() - 4)) <= Integer.parseInt(parameters.get("to")))
+                .filter(a -> parameters.get("from")==null || Integer.parseInt(a.metadata.releaseDate.substring(a.metadata.releaseDate.length() - 4)) >= Integer.parseInt(parameters.get("from")))
+                .count();
+    }
+
     private String getAppearances(Map<String, String> parameters) {
         return Arrays.stream(parameters.get(":words").split("\\+")).parallel()
                 .map(DocumentWordsCommand::toPath)
                 .map(DocumentWordsCommand::getLines)
                 .flatMap(List::stream)
-                .map(s -> new Appearance(s.split("\t")[0], bookTitle(s.split("\t")[0]), s.split("\t")[2], s.split("\t")[1]))
+                .map(s -> new Appearance(s.split("\t")[0], getMetadata(s.split("\t")[0]), s.split("\t")[2], s.split("\t")[1]))
+                .filter(a -> parameters.get("author") == null || a.metadata.author.equals(parameters.get("author")))
+                .filter(a -> parameters.get("to")==null || Integer.parseInt(a.metadata.releaseDate.substring(a.metadata.releaseDate.length() - 4)) <= Integer.parseInt(parameters.get("to")))
+                .filter(a -> parameters.get("from")==null || Integer.parseInt(a.metadata.releaseDate.substring(a.metadata.releaseDate.length() - 4)) >= Integer.parseInt(parameters.get("from")))
                 .map(serializer::serialize)
                 .collect(Collectors.joining(","));
     }
 
-    private static long countAppearances(Map<String, String> parameters) {
-        return Arrays.stream(parameters.get(":words").split("\\+")).parallel()
-                .map(DocumentWordsCommand::toPath)
-                .map(DocumentWordsCommand::getLines)
-                .mapToLong(List::size)
-                .sum();
+    private Metadata getMetadata(String uuid) {
+        return loader.load(uuid);
     }
 
-    private String bookTitle(String uuid) {
-        return loader.load(uuid).title;
+    private static Path toPath(String word) {
+        return Path.of(System.getenv("DATAMART") + "/invertedIndex/index/" + word.charAt(0) + "/" + word.substring(0, 2) + "/" + word);
     }
 
     private static List<String> getLines(Path path) {
@@ -62,9 +71,5 @@ public class DocumentWordsCommand implements Command {
 
     private static String toString(String line, String word) {
         return line + "\t" + word;
-    }
-
-    private static Path toPath(String word) {
-        return Path.of(System.getenv("DATAMART") + "/invertedIndex/index/" + word.charAt(0) + "/" + word.substring(0, 2) + "/" + word);
     }
 }
