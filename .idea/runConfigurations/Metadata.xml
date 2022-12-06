@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="MetadataMain" type="Application" factoryName="Application">
+  <configuration default="false" name="Metadata" type="Application" factoryName="Application">
     <envs>
       <env name="DATALAKE" value="$PROJECT_DIR$/datalake" />
       <env name="DATAMART" value="$PROJECT_DIR$/datamarts" />
@@ -8,7 +8,7 @@
     <module name="metadata" />
     <extension name="coverage">
       <pattern>
-        <option name="PATTERN" value="es.pentagono.*" />
+        <option name="PATTERN" value="es.pentagono.managers.*" />
         <option name="ENABLED" value="true" />
       </pattern>
     </extension>

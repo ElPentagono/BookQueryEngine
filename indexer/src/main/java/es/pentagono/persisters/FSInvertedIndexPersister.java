@@ -11,9 +11,9 @@ import java.util.Map;
 import static java.nio.file.StandardOpenOption.APPEND;
 import static java.nio.file.StandardOpenOption.CREATE;
 
-public class FileSystemInvertedIndexPersister implements InvertedIndexPersister {
+public class FSInvertedIndexPersister implements InvertedIndexPersister {
 
-    private static final String INDEX_HEADER = "id\tposition\n";
+    private static final String INDEX_HEADER = "id\tposition";
     private static final String EVENTS_HEADER = "ts\tuuid\n";
 
     @Override

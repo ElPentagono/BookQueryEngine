@@ -1,16 +1,16 @@
 package es.pentagono.stores;
 
 import es.pentagono.*;
-import es.pentagono.persisters.FileSystemDocumentPersister;
+import es.pentagono.persisters.FSDocumentPersister;
 
 import java.util.UUID;
 
-public class FileSystemDocumentStore implements DocumentStore {
-    public final DocumentPersister Persister = new FileSystemDocumentPersister();
+public class FSDocumentStore implements DocumentStore {
+    public final DocumentPersister Persister = new FSDocumentPersister();
     public final MetadataSerializer metadataSerializer;
     public final EventSerializer eventSerializer;
 
-    public FileSystemDocumentStore(MetadataSerializer metadataSerializer, EventSerializer eventSerializer) {
+    public FSDocumentStore(MetadataSerializer metadataSerializer, EventSerializer eventSerializer) {
         this.metadataSerializer = metadataSerializer;
         this.eventSerializer = eventSerializer;
     }

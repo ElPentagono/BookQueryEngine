@@ -3,12 +3,12 @@ package es.pentagono.stores;
 import es.pentagono.*;
 import es.pentagono.events.StoreEvent;
 
-public class MetadataStore implements Store {
+public class FSMetadataStore implements Store {
     public MetadataPersister persister;
     public MetadataSerializer serializer;
 
 
-    public MetadataStore(MetadataPersister persister, MetadataSerializer serializer) {
+    public FSMetadataStore(MetadataPersister persister, MetadataSerializer serializer) {
         this.persister = persister;
         this.serializer = serializer;
     }

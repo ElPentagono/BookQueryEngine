@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="IndexerMain" type="Application" factoryName="Application">
+  <configuration default="false" name="Indexer" type="Application" factoryName="Application">
     <envs>
       <env name="DATALAKE" value="$PROJECT_DIR$/datalake" />
       <env name="DATAMART" value="$PROJECT_DIR$/datamarts" />

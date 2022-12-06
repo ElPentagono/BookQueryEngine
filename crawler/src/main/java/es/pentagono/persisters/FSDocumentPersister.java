@@ -10,7 +10,7 @@ import java.nio.file.Paths;
 import static java.nio.file.StandardOpenOption.APPEND;
 import static java.nio.file.StandardOpenOption.CREATE;
 
-public class FileSystemDocumentPersister implements DocumentPersister {
+public class FSDocumentPersister implements DocumentPersister {
 
     private static final String EVENTS_HEADER = "ts\tsrc\tuuid\tmd5\n";
 
@@ -24,7 +24,7 @@ public class FileSystemDocumentPersister implements DocumentPersister {
 
     @Override
     public void persist(String event) {
-        Path path = Path.of(System.getenv("DATALAKE") + "/events");
+        Path path = Path.of(System.getenv("DATALAKE") + "/events"); // System.getenv("DATALAKE") + "/events"
         createDirectory(path);
         write(Paths.get(path + "/updates.log"), EVENTS_HEADER, event);
     }
