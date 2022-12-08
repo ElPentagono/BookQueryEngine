@@ -7,7 +7,7 @@ import java.sql.*;
 
 public class SQLMetadataLoader implements MetadataLoader {
 
-    private final static String url = System.getenv("URL");
+    private final static String url = "jdbc:sqlite:/appM/metadataDatamart/content.db";// System.getenv("URL");
 
     public SQLMetadataLoader() {
     }

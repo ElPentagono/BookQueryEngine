@@ -17,7 +17,7 @@ public class SQLMetadataManager implements MetadataManager {
         String sql = "SELECT COUNT(*) FROM metadata";
         try {
             Class.forName("org.sqlite.JDBC");
-            Connection conn = DriverManager.getConnection(System.getenv("URL"));
+            Connection conn = DriverManager.getConnection("jdbc:sqlite:/appM/metadataDatamart/content.db"); // System.getenv("URL")
             Statement stmt = conn.createStatement();
             return Integer.parseInt(stmt.executeQuery(sql).getString("COUNT(*)"));
         } catch (Exception e) {
@@ -32,7 +32,7 @@ public class SQLMetadataManager implements MetadataManager {
 
         try {
             Class.forName("org.sqlite.JDBC");
-            Connection conn = DriverManager.getConnection(System.getenv("URL"));
+            Connection conn = DriverManager.getConnection("jdbc:sqlite:/appM/metadataDatamart/content.db"); // System.getenv("URL")
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(sql);
             return parseToList(rs);

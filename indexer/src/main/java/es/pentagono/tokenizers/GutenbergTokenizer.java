@@ -23,8 +23,8 @@ public class GutenbergTokenizer implements Tokenizer {
 
     private static List<String> loadStopwords() {
         try {
-            URL stopwords = GutenbergTokenizer.class.getClassLoader().getResource("stopwords.txt");
-            return Files.readAllLines(Path.of(stopwords.toURI()));
+            String stopwords = "/appI/stopwords.txt"; // GutenbergTokenizer.class.getClassLoader().getResource("stopwords.txt")
+            return Files.readAllLines(Path.of(stopwords)); // Files.readAllLines(Path.of(stopwords.toURI()))
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

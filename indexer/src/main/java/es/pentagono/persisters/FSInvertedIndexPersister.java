@@ -19,7 +19,8 @@ public class FSInvertedIndexPersister implements InvertedIndexPersister {
     @Override
     public void persist(Map<String, String> invertedIndex) {
         for (String word : invertedIndex.keySet()) {
-            Path path = Path.of(System.getenv("DATAMART") + "/invertedIndex/index/" + word.charAt(0) + "/" + word.substring(0, 2));
+            if (word.length() <= 3) continue;
+            Path path = Path.of("/appI/invertedIndexDatamart/index/" + word.charAt(0) + "/" + word.substring(0, 2)); // System.getenv("DATAMART") + "/invertedIndex/index/" + word.charAt(0) + "/" + word.substring(0, 2)
             createDirectory(path);
             write(Paths.get(path + String.format("/%s", word)), INDEX_HEADER, invertedIndex.get(word));
         }
@@ -27,7 +28,7 @@ public class FSInvertedIndexPersister implements InvertedIndexPersister {
 
     @Override
     public void persist(String event) {
-        Path path = Path.of(System.getenv("DATAMART") + "/invertedIndex/events");
+        Path path = Path.of("/appI/invertedIndexDatamart/events"); // System.getenv("DATAMART") + "/invertedIndex/events"
         createDirectory(path);
         write(Paths.get(path + "/indexed.log"), EVENTS_HEADER, event);
     }

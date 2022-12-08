@@ -16,7 +16,7 @@ public class FSDocumentPersister implements DocumentPersister {
 
     @Override
     public void persist(String id, String metadata, String content) {
-        Path path = Path.of(String.format(System.getenv("DATALAKE") + "/documents" + "/%s", id));
+        Path path = Path.of(String.format("/app/datalake/documents/%s", id)); // String.format(System.getenv("DATALAKE") + "/documents" + "/%s", id)
         createDirectory(path);
         write(Paths.get(path + "/content.txt"), "", content);
         write(Paths.get(path + "/metadata.json"), "", metadata);
@@ -24,7 +24,7 @@ public class FSDocumentPersister implements DocumentPersister {
 
     @Override
     public void persist(String event) {
-        Path path = Path.of(System.getenv("DATALAKE") + "/events"); // System.getenv("DATALAKE") + "/events"
+        Path path = Path.of("/app/datalake/events"); // System.getenv("DATALAKE") + "/events"
         createDirectory(path);
         write(Paths.get(path + "/updates.log"), EVENTS_HEADER, event);
     }

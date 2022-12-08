@@ -1,7 +1,7 @@
 package es.pentagono.commands;
 
 import es.pentagono.*;
-import es.pentagono.deserializers.events.StoreEvent;
+import es.pentagono.events.StoreEvent;
 
 import java.io.File;
 import java.io.IOException;
@@ -39,11 +39,11 @@ public class StatsTypeCommand implements Command {
     }
 
     private static int countAppearancesDatalake() {
-        return new File(System.getenv("DATALAKE") + "/documents").list().length;
+        return new File("/app/datalake" + "/documents").list().length; // System.getenv("DATALAKE") + "/documents"
     }
 
     private String getEvents() throws IOException {
-        return Files.lines(Path.of(System.getenv("DATALAKE") + "/events/updates.log"))
+        return Files.lines(Path.of("/app/datalake" + "/events/updates.log"))// System.getenv("DATALAKE") + "/events/updates.log"
                 .skip(1)
                 .map(l -> new StoreEvent(l.split("\t")[0], l.split("\t")[1], l.split("\t")[2], l.split("\t")[3]))
                 .map(eventserializer::serialize)

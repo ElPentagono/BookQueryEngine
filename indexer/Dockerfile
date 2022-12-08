@@ -1,4 +1,6 @@
-FROM amazoncorretto:11
-COPY indexer-1.0-SNAPSHOT-jar-with-dependencies.jar /opt/indexer/indexer-1.0-SNAPSHOT-jar-with-dependencies.jar
-EXPOSE 8080/tcp
-CMD java -jar opt/indexer/indexer-1.0-SNAPSHOT-jar-with-dependencies.jar
+FROM alpine:latest
+RUN apk update
+RUN apk add openjdk11-jre
+COPY indexer-1.0-SNAPSHOT-jar-with-dependencies.jar /appI/indexer-1.0-SNAPSHOT-jar-with-dependencies.jar
+COPY src/main/resources/stopwords.txt /appI/stopwords.txt
+CMD ["java", "-jar", "/appI/indexer-1.0-SNAPSHOT-jar-with-dependencies.jar"]

@@ -16,8 +16,8 @@ import static java.nio.file.StandardOpenOption.CREATE;
 
 public class SQLMetadataPersister implements MetadataPersister {
 
-    private final static String url = "jdbc:sqlite:" + System.getenv("DATAMART") + "/metadata/content.db";
-    private static final String DATAMART = System.getenv("DATAMART");
+    private final static String url = "jdbc:sqlite:/appM/metadataDatamart/content.db"; // "jdbc:sqlite:" + System.getenv("DATAMART") + "/metadata/content.db"
+    private static final String DATAMART = "/appM/metadataDatamart";// System.getenv("DATAMART");
     private static final String LOG_HEADER = "filename\tts";
 
     public SQLMetadataPersister() {
@@ -40,15 +40,15 @@ public class SQLMetadataPersister implements MetadataPersister {
     public void persist(Event event) {
         try {
             if (existsInDatamart(((StoreEvent) event).filename)) return;
-            write(Paths.get(DATAMART + "/metadata/events/updates.log"), new StoreEvent(((StoreEvent) event).filename).toString(), APPEND);
+            write(Paths.get(DATAMART + "/events/updates.log"), new StoreEvent(((StoreEvent) event).filename).toString(), APPEND);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
     private void createDatamartDirectory() throws IOException {
-        if (notExist(DATAMART + "/metadata")) {
-            createDirectory(Path.of(DATAMART + "/metadata/events"));
+        if (notExist(DATAMART)) {
+            createDirectory(Path.of(DATAMART + "/events"));
             addHeaderStoreEventFile();
         }
     }
@@ -62,7 +62,7 @@ public class SQLMetadataPersister implements MetadataPersister {
     }
 
     private void addHeaderStoreEventFile() throws IOException {
-        write(Paths.get(DATAMART + "/metadata/events/updates.log"), LOG_HEADER, CREATE);
+        write(Paths.get(DATAMART + "/events/updates.log"), LOG_HEADER, CREATE);
     }
 
 
@@ -100,8 +100,8 @@ public class SQLMetadataPersister implements MetadataPersister {
     }
 
     private boolean existsInDatamart(String filename) throws IOException {
-        if (notExist(DATAMART + "/metadata/events/updates.log")) return false;
-        return Files.readAllLines(Paths.get(DATAMART + "/metadata/events/updates.log")).stream()
+        if (notExist(DATAMART + "/events/updates.log")) return false;
+        return Files.readAllLines(Paths.get(DATAMART + "/events/updates.log")).stream()
                 .map(line -> line.split("\t")[0])
                 .anyMatch(s -> s.contains(filename));
     }

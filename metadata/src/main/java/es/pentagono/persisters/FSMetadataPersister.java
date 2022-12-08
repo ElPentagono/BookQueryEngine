@@ -16,7 +16,7 @@ import static java.nio.file.StandardOpenOption.CREATE;
 
 public class FSMetadataPersister implements MetadataPersister {
 
-    public static final String DATAMART = System.getenv("DATAMART");
+    public static final String DATAMART = "/app"; // System.getenv("DATAMART");
     public static final String LOG_HEADER = "filename\tts";
 
     public void persist(String filename, String content) {

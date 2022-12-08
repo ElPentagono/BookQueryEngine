@@ -8,8 +8,8 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Updater {
-    private static final String DOCUMENTS = System.getenv("DATALAKE") + "/documents";
-    private static final String EVENTS = System.getenv("DATAMART") + "/invertedindex/events/indexed.log";
+    private static final String DOCUMENTS = "/app/datalake/documents";
+    private static final String EVENTS = "/appI/invertedIndexDatamart/events/indexed.log";
     private static final List<String> UUIDS = new ArrayList<>();
     private final DocumentProcessor processor;
 

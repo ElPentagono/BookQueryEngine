@@ -80,7 +80,7 @@ public class DocumentWordsCommand implements Command {
     }
 
     private static Path toPath(String word) {
-        return Path.of(System.getenv("DATAMART") + "/invertedIndex/index/" + word.charAt(0) + "/" + word.substring(0, 2) + "/" + word);
+        return Path.of("/appI" + "/invertedIndexDatamart/index/" + word.charAt(0) + "/" + word.substring(0, 2) + "/" + word); // System.getenv("DATAMART") + "/invertedIndex/index/"
     }
 
     private static List<String> getLines(Path path) {

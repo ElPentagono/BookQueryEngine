@@ -49,8 +49,8 @@ public class DownloadTask implements Task {
     }
 
     private boolean isStored(String source, String md5) throws IOException {
-        if (!Files.exists(Paths.get(System.getenv("DATALAKE") + "/events/updates.log"))) return false;
-        return Files.lines(Paths.get(System.getenv("DATALAKE") + "/events/updates.log"))
+        if (!Files.exists(Paths.get("/app/datalake/events/updates.log"))) return false; // System.getenv("DATALAKE") + "/events/updates.log"
+        return Files.lines(Paths.get("/app/datalake/events/updates.log"))// System.getenv("DATALAKE") + "/events/updates.log"
                 .map(line -> line.split("\t"))
                 .anyMatch(row -> row[1].equals(source) && row[3].equals(md5));
     }

@@ -15,7 +15,8 @@ public class Main {
     public static void main(String[] args) throws IOException {
         GsonMetadataDeserializer deserializer = new GsonMetadataDeserializer();
         Store store = new SQLMetadataStore();
-        File file = new File(System.getenv("DATALAKE") + "/documents");
+        File file = new File("/app/datalake" + "/documents"); // System.getenv("DATALAKE") + "/documents"
+        while (!file.exists()) {}
         Arrays.stream(file.listFiles()).forEach(filename -> {
             DatalakeMetadata metadata = (DatalakeMetadata) new FSMetadataReader(deserializer).read(filename.getName());
             store.store(
