@@ -2,6 +2,9 @@ package es.pentagono.tokenizers;
 
 import es.pentagono.Tokenizer;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -11,10 +14,11 @@ import java.util.stream.Collectors;
 public class GutenbergTokenizer implements Tokenizer {
 
     private static final List<String> stopwords = loadStopwords();
-    private final Map<String, List<Integer>> tokenizeContent = new HashMap<>();
+    private Map<String, List<Integer>> tokenizeContent;
 
     @Override
     public Map<String, List<Integer>> tokenize(String content) {
+        tokenizeContent = new HashMap<>();
         String cleanContent = content.replaceAll("[\\p{Punct}[0-9]+_\\-—\t\n\\x0B\f\n\r‘’“”]", " ");
         return processDocument(Collections.list(new StringTokenizer(cleanContent, " ")).stream()
                 .map(token -> (String) token)
@@ -23,8 +27,10 @@ public class GutenbergTokenizer implements Tokenizer {
 
     private static List<String> loadStopwords() {
         try {
-            String stopwords = "/appI/stopwords.txt"; // GutenbergTokenizer.class.getClassLoader().getResource("stopwords.txt")
-            return Files.readAllLines(Path.of(stopwords)); // Files.readAllLines(Path.of(stopwords.toURI()))
+            InputStream in = GutenbergTokenizer.class.getClassLoader().getResourceAsStream("stopwords.txt");
+            return new BufferedReader(new InputStreamReader(in))
+                    .lines()
+                    .collect(Collectors.toList());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

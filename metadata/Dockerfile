@@ -1,5 +1,4 @@
-FROM alpine:latest
-RUN apk update
-RUN apk add openjdk11-jre
-COPY metadata-1.0-SNAPSHOT-jar-with-dependencies.jar /appM/metadata-1.0-SNAPSHOT-jar-with-dependencies.jar
-CMD ["java", "-jar", "/appM/metadata-1.0-SNAPSHOT-jar-with-dependencies.jar"]
+FROM eclipse-temurin:11-jre-alpine
+COPY target/dependency-jars /appM/dependency-jars
+ADD target/metadata.jar /appM/metadata.jar
+ENTRYPOINT java -jar appM/metadata.jar

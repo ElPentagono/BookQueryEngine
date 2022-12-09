@@ -1,6 +1,4 @@
-FROM alpine:latest
-RUN apk update
-RUN apk add openjdk11-jre
-COPY indexer-1.0-SNAPSHOT-jar-with-dependencies.jar /appI/indexer-1.0-SNAPSHOT-jar-with-dependencies.jar
-COPY src/main/resources/stopwords.txt /appI/stopwords.txt
-CMD ["java", "-jar", "/appI/indexer-1.0-SNAPSHOT-jar-with-dependencies.jar"]
+FROM eclipse-temurin:11-jre-alpine
+COPY target/dependency-jars /appI/dependency-jars
+ADD target/indexer.jar /appI/indexer.jar
+ENTRYPOINT java -jar appI/indexer.jar
