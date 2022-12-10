@@ -12,7 +12,8 @@ import static java.nio.file.StandardOpenOption.CREATE;
 
 public class FSDocumentPersister implements DocumentPersister {
 
-    private static final String EVENTS_HEADER = "ts\tsrc\tuuid\tmd5\n";
+    private static final String CONFIG_HEADER = "src\tuuid\tmd5\n";
+    private static final String UPDATE_HEADER = "ts\tuuid\tcontent\tcomment\n";
 
     @Override
     public void persist(String id, String metadata, String content) {
@@ -23,10 +24,17 @@ public class FSDocumentPersister implements DocumentPersister {
     }
 
     @Override
-    public void persist(String event) {
+    public void persistConfig(String event) {
+        Path path = Path.of("/app/datalake"); // System.getenv("DATALAKE") + "/events"
+        createDirectory(path);
+        write(Paths.get(path + "/crawler.config"), CONFIG_HEADER, event);
+    }
+
+    @Override
+    public void persistEvent(String event) {
         Path path = Path.of("/app/datalake/events"); // System.getenv("DATALAKE") + "/events"
         createDirectory(path);
-        write(Paths.get(path + "/updates.log"), EVENTS_HEADER, event);
+        write(Paths.get(path + "/updates.log"), UPDATE_HEADER, event);
     }
 
     private void createDirectory(Path path) {

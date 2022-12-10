@@ -1,5 +1,6 @@
 package es.pentagono;
 
 public interface EventSerializer extends Serializer {
-    String serialize(Event event);
+    String serializeConfig(Event event);
+    String serializeDatalake(Event event);
 }

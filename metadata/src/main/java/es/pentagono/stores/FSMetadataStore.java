@@ -14,8 +14,8 @@ public class FSMetadataStore implements Store {
     }
 
     @Override
-    public void store(Metadata metadata, String uuid) {
-        persister.persist(uuid, serializer.serialize(metadata));
-        persister.persist(new StoreEvent(uuid));
+    public void store(Document document) {
+        persister.persist(document);
+        persister.persist(new StoreEvent(document.uuid));
     }
 }

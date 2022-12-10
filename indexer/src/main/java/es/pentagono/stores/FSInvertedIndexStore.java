@@ -15,11 +15,12 @@ public class FSInvertedIndexStore implements InvertedIndexStore {
 
     @Override
     public void store(InvertedIndex invertedIndex) {
-        persister.persist(serializer.serialize(invertedIndex));
+        persister.persistConfig(serializer.serialize(invertedIndex));
     }
 
     @Override
     public void store(Event event) {
-        persister.persist(eventSerializer.serialize(event));
+        persister.persistConfig(eventSerializer.serializeConfig(event));
+        persister.persistDatalake(eventSerializer.serializeDatalake(event));
     }
 }

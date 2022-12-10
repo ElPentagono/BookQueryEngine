@@ -6,7 +6,7 @@ import es.pentagono.persisters.FSDocumentPersister;
 import java.util.UUID;
 
 public class FSDocumentStore implements DocumentStore {
-    public final DocumentPersister Persister = new FSDocumentPersister();
+    public final DocumentPersister persister = new FSDocumentPersister();
     public final MetadataSerializer metadataSerializer;
     public final EventSerializer eventSerializer;
 
@@ -18,12 +18,14 @@ public class FSDocumentStore implements DocumentStore {
     @Override
     public String store(Document document) {
         String uuid = UUID.randomUUID().toString();
-        Persister.persist(uuid, metadataSerializer.serialize(document.metadata), document.content);
+        persister.persist(uuid, metadataSerializer.serialize(document.metadata), document.content);
         return uuid;
     }
 
     @Override
     public void store(Event event) {
-        Persister.persist(eventSerializer.serialize(event));
+        persister.persistConfig(eventSerializer.serializeConfig(event));
+        persister.persistEvent(eventSerializer.serializeDatalake(event));
+
     }
 }

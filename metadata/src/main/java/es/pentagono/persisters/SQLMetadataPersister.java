@@ -1,5 +1,6 @@
 package es.pentagono.persisters;
 
+import es.pentagono.Document;
 import es.pentagono.Event;
 import es.pentagono.MetadataPersister;
 import es.pentagono.events.StoreEvent;
@@ -18,19 +19,20 @@ public class SQLMetadataPersister implements MetadataPersister {
 
     private final static String url = "jdbc:sqlite:/appM/metadataDatamart/content.db"; // "jdbc:sqlite:" + System.getenv("DATAMART") + "/metadata/content.db"
     private static final String DATAMART = "/appM/metadataDatamart";// System.getenv("DATAMART");
-    private static final String LOG_HEADER = "filename\tts";
+    private static final String EVENT_FILE = "/app/datalake/events/updates.log";// System.getenv("DATAMART");
+    private static final String CONFIG_HEADER = "filename\n";
 
     public SQLMetadataPersister() {
     }
 
     @Override
-    public void persist(String filename, String content) {
+    public void persist(Document document) {
         try {
             createDatamartDirectory();
             Class.forName("org.sqlite.JDBC");
-            if (existsInDatamart(filename)) return;
+            if (existsInDatamart(document.uuid)) return;
             createTable();
-            insertIntoTable(filename, content);
+            insertIntoTable(document);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -40,7 +42,8 @@ public class SQLMetadataPersister implements MetadataPersister {
     public void persist(Event event) {
         try {
             if (existsInDatamart(((StoreEvent) event).filename)) return;
-            write(Paths.get(DATAMART + "/events/updates.log"), new StoreEvent(((StoreEvent) event).filename).toString(), APPEND);
+            write(Paths.get(DATAMART + "/metadata.config"), ((StoreEvent) event).filename + "\n", APPEND);
+            write(Paths.get(EVENT_FILE), ((StoreEvent) event).ts.getTime() + "\t" + ((StoreEvent) event).filename + "\tMETADATA DATAMART\tDOCUMENT ADDED\n", APPEND);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -48,21 +51,21 @@ public class SQLMetadataPersister implements MetadataPersister {
 
     private void createDatamartDirectory() throws IOException {
         if (notExist(DATAMART)) {
-            createDirectory(Path.of(DATAMART + "/events"));
-            addHeaderStoreEventFile();
+            createDirectory(Path.of(DATAMART));
+            createConfigFile();
         }
     }
 
     private void createDirectory(Path path) {
-        if (!Files.exists(path)) path.toFile().mkdirs();
+        path.toFile().mkdirs();
     }
 
     private static boolean notExist(String file) {
         return !Files.exists(Paths.get(file));
     }
 
-    private void addHeaderStoreEventFile() throws IOException {
-        write(Paths.get(DATAMART + "/events/updates.log"), LOG_HEADER, CREATE);
+    private void createConfigFile() throws IOException {
+        write(Paths.get(DATAMART + "/metadata.config"), CONFIG_HEADER, CREATE);
     }
 
 
@@ -83,9 +86,9 @@ public class SQLMetadataPersister implements MetadataPersister {
         }
     }
 
-    private void insertIntoTable(String filename, String content) {
+    private void insertIntoTable(Document document) {
         String sql = "INSERT INTO metadata " +
-                "VALUES ('" + filename + "'," + content + ")";
+                "VALUES ('" + document.uuid + "'," + document.metadata + ")";
 
         try (Connection conn = DriverManager.getConnection(url);
              Statement stmt = conn.createStatement()) {
@@ -100,9 +103,8 @@ public class SQLMetadataPersister implements MetadataPersister {
     }
 
     private boolean existsInDatamart(String filename) throws IOException {
-        if (notExist(DATAMART + "/events/updates.log")) return false;
-        return Files.readAllLines(Paths.get(DATAMART + "/events/updates.log")).stream()
-                .map(line -> line.split("\t")[0])
+        if (notExist(DATAMART + "/metadata.config")) return false;
+        return Files.readAllLines(Paths.get(DATAMART + "/metadata.config")).stream()
                 .anyMatch(s -> s.contains(filename));
     }
 }

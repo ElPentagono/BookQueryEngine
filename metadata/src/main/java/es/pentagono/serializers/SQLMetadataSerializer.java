@@ -8,6 +8,7 @@ public class SQLMetadataSerializer implements MetadataSerializer {
     public String serialize(Metadata metadata) {
         return "'" + metadata.title().replaceAll("'","") + "','"
                 + metadata.author().replaceAll("'","") + "','"
-                + metadata.language().replaceAll("'","") + "','" + metadata.releaseDate() + "'";
+                + metadata.language().replaceAll("'","") + "','"
+                + metadata.releaseDate() + "'";
     }
 }
