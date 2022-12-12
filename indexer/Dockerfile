@@ -1,4 +1,4 @@
-FROM amazoncorretto:11
-COPY indexer-1.0-SNAPSHOT-jar-with-dependencies.jar /opt/indexer/indexer-1.0-SNAPSHOT-jar-with-dependencies.jar
-EXPOSE 8080/tcp
-CMD java -jar opt/indexer/indexer-1.0-SNAPSHOT-jar-with-dependencies.jar
+FROM eclipse-temurin:11-jre-alpine
+COPY target/dependency-jars /appI/dependency-jars
+ADD target/indexer.jar /appI/indexer.jar
+ENTRYPOINT java -jar appI/indexer.jar

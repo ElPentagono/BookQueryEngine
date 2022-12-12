@@ -1,4 +1,4 @@
-package es.pentagono.deserializers.events;
+package es.pentagono.events;
 
 import es.pentagono.Event;
 

@@ -12,21 +12,29 @@ import static java.nio.file.StandardOpenOption.CREATE;
 
 public class FSDocumentPersister implements DocumentPersister {
 
-    private static final String EVENTS_HEADER = "ts\tsrc\tuuid\tmd5\n";
+    private static final String CONFIG_HEADER = "src\tuuid\tmd5\n";
+    private static final String UPDATE_HEADER = "ts\tuuid\tcontent\tcomment\n";
 
     @Override
     public void persist(String id, String metadata, String content) {
-        Path path = Path.of(String.format(System.getenv("DATALAKE") + "/documents" + "/%s", id));
+        Path path = Path.of(String.format("/app/datalake/documents/%s", id)); // String.format(System.getenv("DATALAKE") + "/documents" + "/%s", id)
         createDirectory(path);
         write(Paths.get(path + "/content.txt"), "", content);
         write(Paths.get(path + "/metadata.json"), "", metadata);
     }
 
     @Override
-    public void persist(String event) {
-        Path path = Path.of(System.getenv("DATALAKE") + "/events"); // System.getenv("DATALAKE") + "/events"
+    public void persistConfig(String event) {
+        Path path = Path.of("/app/datalake"); // System.getenv("DATALAKE") + "/events"
         createDirectory(path);
-        write(Paths.get(path + "/updates.log"), EVENTS_HEADER, event);
+        write(Paths.get(path + "/crawler.config"), CONFIG_HEADER, event);
+    }
+
+    @Override
+    public void persistEvent(String event) {
+        Path path = Path.of("/app/datalake/events"); // System.getenv("DATALAKE") + "/events"
+        createDirectory(path);
+        write(Paths.get(path + "/updates.log"), UPDATE_HEADER, event);
     }
 
     private void createDirectory(Path path) {

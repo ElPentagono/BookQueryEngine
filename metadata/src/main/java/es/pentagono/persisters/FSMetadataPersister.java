@@ -1,5 +1,6 @@
 package es.pentagono.persisters;
 
+import es.pentagono.Document;
 import es.pentagono.Event;
 import es.pentagono.MetadataPersister;
 import es.pentagono.events.StoreEvent;
@@ -16,14 +17,14 @@ import static java.nio.file.StandardOpenOption.CREATE;
 
 public class FSMetadataPersister implements MetadataPersister {
 
-    public static final String DATAMART = System.getenv("DATAMART");
-    public static final String LOG_HEADER = "filename\tts";
+    public static final String DATAMART = "/app"; // System.getenv("DATAMART");
+    public static final String CONFIG_HEADER = "filename";
 
-    public void persist(String filename, String content) {
+    public void persist(Document document) {
         try {
             createDatamartDirectory();
-            if (existsInDatamart(filename)) return;
-            write(Paths.get(DATAMART + "/metadata/content/" + filename), content, CREATE);
+            if (existsInDatamart(document.uuid)) return;
+            write(Paths.get(DATAMART + "/metadata/content/" + document.uuid), document.metadata, CREATE);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -48,7 +49,6 @@ public class FSMetadataPersister implements MetadataPersister {
     private void createDatamartDirectory() throws IOException {
         if (notExist(DATAMART + "/metadata")) {
             createDirectory(DATAMART + "/metadata/content");
-            createDirectory(DATAMART + "/metadata/events");
             addHeaderStoreEventFile();
         }
     }
@@ -62,7 +62,7 @@ public class FSMetadataPersister implements MetadataPersister {
     }
 
     private void addHeaderStoreEventFile() throws IOException {
-        write(Paths.get(DATAMART + "/metadata/events/updates.log"), LOG_HEADER, CREATE);
+        write(Paths.get(DATAMART + "/metadata.config"), CONFIG_HEADER, CREATE);
     }
 
     private void createDirectory(String path) {

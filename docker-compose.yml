@@ -1,0 +1,31 @@
+version: "3"
+services:
+  crawler:
+    build: /crawler
+    volumes:
+      - datalake:/app
+  indexer:
+    build: /indexer
+    volumes:
+      - datalake:/app
+      - invertedIndexDatamart:/appI
+  metadata:
+    build: /metadata
+    volumes:
+      - datalake:/app
+      - metadataDatamart:/appM
+  webservice:
+    build: /webservice
+    volumes:
+      - datalake:/app
+      - invertedIndexDatamart:/appI:ro
+      - metadataDatamart:/appM:ro
+    ports:
+      - "8080:8080"
+volumes:
+  datalake:
+    external: true
+  invertedIndexDatamart:
+    external: true
+  metadataDatamart:
+    external: true

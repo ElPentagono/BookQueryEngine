@@ -1,4 +1,4 @@
-FROM amazoncorretto:11
-VOLUME /datalake
-COPY crawler-1.0-SNAPSHOT-jar-with-dependencies.jar /app/crawler-1.0-SNAPSHOT-jar-with-dependencies.jar
-CMD ["java", "-jar", "/app/crawler-1.0-SNAPSHOT-jar-with-dependencies.jar"]
+FROM eclipse-temurin:11-jre-alpine
+COPY target/dependency-jars /app/dependency-jars
+ADD target/crawler.jar /app/crawler.jar
+ENTRYPOINT java -jar app/crawler.jar

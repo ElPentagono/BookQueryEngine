@@ -3,7 +3,7 @@ package es.pentagono;
 import es.pentagono.builders.InvertedIndexBuilder;
 import es.pentagono.deserializer.FSDocumentLoader;
 import es.pentagono.persisters.FSInvertedIndexPersister;
-import es.pentagono.serializers.TsvEventSerializer;
+import es.pentagono.serializers.TsvStoreEventSerializer;
 import es.pentagono.serializers.TsvInvertedIndexSerializer;
 import es.pentagono.stores.FSInvertedIndexStore;
 import es.pentagono.tokenizers.GutenbergTokenizer;
@@ -19,13 +19,13 @@ public class Main {
                 ),
                 new FSInvertedIndexStore(
                         new TsvInvertedIndexSerializer(),
-                        new TsvEventSerializer(),
+                        new TsvStoreEventSerializer(),
                         new FSInvertedIndexPersister()
                 )
         );
         new Updater(docProcessor).update();
         FileSystemEntityWatcher
-                .of(new File(System.getenv("DATALAKE") + "/documents")).
+                .of(new File("/app/datalake/documents")). // System.getenv("DATALAKE") + "/documents"
                 addListener(docProcessor::process).
                 watch();
     }

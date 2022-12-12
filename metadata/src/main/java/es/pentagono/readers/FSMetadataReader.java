@@ -25,6 +25,6 @@ public class FSMetadataReader implements MetadataReader {
     }
 
     private String documentPath(String documentId) {
-        return System.getenv("DATALAKE") + "/documents/" + documentId + "/metadata.json";
+        return "/app/datalake" + "/documents/" + documentId + "/metadata.json"; // System.getenv("DATALAKE") + "/documents/" + documentId + "/metadata.json";
     }
 }

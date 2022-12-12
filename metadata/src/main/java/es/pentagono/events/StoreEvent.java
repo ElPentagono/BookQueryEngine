@@ -14,8 +14,4 @@ public class StoreEvent implements Event {
         this.ts = new Timestamp(System.currentTimeMillis());
     }
 
-    @Override
-    public String toString() {
-        return "\n" + filename + "\t" + ts.getTime();
-    }
 }

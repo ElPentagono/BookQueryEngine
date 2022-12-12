@@ -1,6 +1,6 @@
 package es.pentagono;
 
 public interface MetadataPersister {
-    void persist(String filename, String content);
+    void persist(Document document);
     void persist(Event event);
 }

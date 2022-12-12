@@ -11,11 +11,11 @@ public class InvertedIndexEvent implements Event{
         this.uuid = uuid;
     }
 
-    public Timestamp Ts() {
+    public Timestamp ts() {
         return ts;
     }
 
-    public String Uuid() {
+    public String uuid() {
         return uuid;
     }
 }

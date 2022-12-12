@@ -8,8 +8,8 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Updater {
-    private static final String DOCUMENTS = System.getenv("DATALAKE") + "/documents";
-    private static final String EVENTS = System.getenv("DATAMART") + "/invertedindex/events/indexed.log";
+    private static final String DOCUMENTS = "/app/datalake/documents";
+    private static final String EVENTS = "/appI/invertedIndexDatamart/indexer.config";
     private static final List<String> UUIDS = new ArrayList<>();
     private final DocumentProcessor processor;
 
@@ -22,7 +22,7 @@ public class Updater {
         try {
             if (!new File(EVENTS).exists()) return;
             Scanner scanner = new Scanner(new FileReader(EVENTS));
-            while (scanner.hasNextLine()) UUIDS.add(scanner.nextLine().split("\t")[1]);
+            while (scanner.hasNextLine()) UUIDS.add(scanner.nextLine());
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }

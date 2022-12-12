@@ -2,5 +2,6 @@ package es.pentagono;
 
 public interface DocumentPersister {
     void persist(String id, String metadata, String content);
-    void persist(String event);
+    void persistConfig(String event);
+    void persistEvent(String event);
 }

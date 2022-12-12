@@ -49,10 +49,10 @@ public class DownloadTask implements Task {
     }
 
     private boolean isStored(String source, String md5) throws IOException {
-        if (!Files.exists(Paths.get(System.getenv("DATALAKE") + "/events/updates.log"))) return false;
-        return Files.lines(Paths.get(System.getenv("DATALAKE") + "/events/updates.log"))
+        if (!Files.exists(Paths.get("/app/datalake/crawler.config"))) return false; // System.getenv("DATALAKE") + "/events/updates.log"
+        return Files.lines(Paths.get("/app/datalake/crawler.config"))// System.getenv("DATALAKE") + "/events/updates.log"
                 .map(line -> line.split("\t"))
-                .anyMatch(row -> row[1].equals(source) && row[3].equals(md5));
+                .anyMatch(row -> row[0].equals(source) && row[2].equals(md5));
     }
 
     private static String Md5(String content) throws NoSuchAlgorithmException {

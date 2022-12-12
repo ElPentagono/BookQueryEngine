@@ -1,4 +1,4 @@
-FROM amazoncorretto:11
-COPY webservice-1.0-SNAPSHOT-jar-with-dependencies.jar /opt/webservice/webservice-1.0-SNAPSHOT-jar-with-dependencies.jar
-EXPOSE 8080/tcp
-CMD java -jar opt/webservice/webservice-1.0-SNAPSHOT-jar-with-dependencies.jar
+FROM eclipse-temurin:11-jre-alpine
+COPY target/dependency-jars /appW/dependency-jars
+ADD target/webservice.jar /appW/webservice.jar
+ENTRYPOINT java -jar appW/webservice.jar
