@@ -1,8 +1,6 @@
 package es.pentagono;
 
 import es.pentagono.deserializer.GsonMetadataDeserializer;
-import es.pentagono.metadatas.DatalakeMetadata;
-import es.pentagono.metadatas.DatamartMetadata;
 import es.pentagono.readers.FSMetadataReader;
 import es.pentagono.serializers.SQLMetadataSerializer;
 import es.pentagono.stores.SQLMetadataStore;
@@ -19,22 +17,23 @@ public class Main {
         File file = new File("/app/datalake" + "/documents"); // System.getenv("DATALAKE") + "/documents"
         while (!file.exists()) {}
         Arrays.stream(file.listFiles()).forEach(filename -> {
-            DatalakeMetadata metadata = (DatalakeMetadata) new FSMetadataReader(deserializer).read(filename.getName());
+            Metadata metadata = new FSMetadataReader(deserializer).read(filename.getName());
             store.store(new Document(filename.getName(), sqlMetadataSerializer.serialize(
-                    new DatamartMetadata(
+                    new Metadata(
                             metadata.title(),
                             metadata.author(),
                             metadata.language(),
-                            metadata.releaseDate()
+                            metadata.releaseDate(),
+                            filename.getName()
                     )
             )));
         });
 
-        FileWatcher.of(file).add((String f) -> {
-            DatalakeMetadata metadata = (DatalakeMetadata) new FSMetadataReader(deserializer).read(f);
-            store.store(new Document(f, sqlMetadataSerializer.serialize(new DatamartMetadata(
+        FileWatcher.of(file).add((String documentId) -> {
+            Metadata metadata = new FSMetadataReader(deserializer).read(documentId);
+            store.store(new Document(documentId, sqlMetadataSerializer.serialize(new Metadata(
                             metadata.title(), metadata.author(),
-                            metadata.language(), metadata.releaseDate())
+                            metadata.language(), metadata.releaseDate(), documentId)
             )));
         }).start();
 
