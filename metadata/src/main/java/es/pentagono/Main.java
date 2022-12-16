@@ -19,11 +19,8 @@ public class Main {
         Arrays.stream(file.listFiles()).forEach(filename -> {
             Metadata metadata = new FSMetadataReader(deserializer).read(filename.getName());
             store.store(new Document(filename.getName(), sqlMetadataSerializer.serialize(
-                    new Metadata(
-                            metadata.title(),
-                            metadata.author(),
-                            metadata.language(),
-                            metadata.releaseDate(),
+                    new ExtendedMetadata(
+                            metadata,
                             filename.getName()
                     )
             )));
@@ -31,9 +28,10 @@ public class Main {
 
         FileWatcher.of(file).add((String documentId) -> {
             Metadata metadata = new FSMetadataReader(deserializer).read(documentId);
-            store.store(new Document(documentId, sqlMetadataSerializer.serialize(new Metadata(
-                            metadata.title(), metadata.author(),
-                            metadata.language(), metadata.releaseDate(), documentId)
+            store.store(new Document(documentId, sqlMetadataSerializer.serialize(new ExtendedMetadata(
+                    metadata,
+                    documentId
+                    )
             )));
         }).start();
 

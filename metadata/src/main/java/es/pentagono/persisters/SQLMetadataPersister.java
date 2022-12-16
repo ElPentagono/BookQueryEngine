@@ -75,7 +75,7 @@ public class SQLMetadataPersister implements MetadataPersister {
                 + "	title text,\n"
                 + "	author text,\n"
                 + "	language text,\n"
-                + "	releaseDate text,\n"
+                + "	releaseDate DATE,\n"
                 + "	wordCount INTEGER\n"
                 + ");";
 
