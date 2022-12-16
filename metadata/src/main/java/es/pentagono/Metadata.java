@@ -8,7 +8,6 @@ public class Metadata {
     private final String title;
     private final String author;
     private final String language;
-    @SerializedName("date")
     private final LocalDate releaseDate;
 
 
