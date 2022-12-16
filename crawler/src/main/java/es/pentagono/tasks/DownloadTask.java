@@ -14,7 +14,6 @@ import java.util.Iterator;
 
 public class DownloadTask implements Task {
 
-    private final MetadataBuilder Builder = new MetadataBuilder();
     private Source source;
     private DocumentStore store;
 
@@ -39,7 +38,7 @@ public class DownloadTask implements Task {
                 store.store(new StoreEvent(
                         event.ts,
                         event.source,
-                        store.store(new Document(event.source, Builder.build(event.metadata), event.content)),
+                        store.store(new Document(event.source, event.metadata, event.content)),
                         Md5(event.content))
                 );
             }
