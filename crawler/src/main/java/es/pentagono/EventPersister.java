@@ -1,5 +1,5 @@
 package es.pentagono;
 
 public interface EventPersister {
-    void persist(Event event);
+    void persist(String event);
 }

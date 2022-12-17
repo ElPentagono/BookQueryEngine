@@ -16,7 +16,7 @@ public class FSDocumentLoader implements DocumentLoader {
     @Override
     public Document load(String id) {
         try {
-            String path = String.format("/app/datalake/documents/%s", id); // String.format(System.getenv("DATALAKE") + "/documents/%s", id)
+            String path = String.format("/app/datalake/documents/%s", id);
             return new Document(id, metadata(path + "/metadata.json"), content(path + "/content.txt"));
         }
         catch (IOException exception) {
