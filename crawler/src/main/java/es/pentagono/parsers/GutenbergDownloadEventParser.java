@@ -4,7 +4,6 @@ import es.pentagono.EventParser;
 import es.pentagono.Metadata;
 import es.pentagono.events.DownloadEvent;
 
-import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
@@ -25,7 +24,7 @@ public class GutenbergDownloadEventParser implements EventParser {
         return new DownloadEvent(url,
                 getMetadataFromBook(getMetadataSection(book)),
                 content(book),
-                new Timestamp(System.currentTimeMillis()));
+                System.currentTimeMillis());
     }
 
     private Metadata getMetadataFromBook(String metadataSection) {

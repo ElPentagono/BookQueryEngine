@@ -19,7 +19,6 @@ public class FSInvertedIndexWriter implements InvertedIndexWriter {
     @Override
     public void write(Map<String, String> invertedIndex) {
         for (String word : invertedIndex.keySet()) {
-            if (word.length() <= 3) continue;
             Path path = Path.of(Configuration.getProperty("datamart") + "/index/" + word.charAt(0) + "/" + word.substring(0, 2));
             createDirectory(path);
             write(Paths.get(path + String.format("/%s", word)), invertedIndex.get(word));

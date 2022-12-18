@@ -8,7 +8,7 @@ public class TsvEventSerializer implements EventSerializer {
     @Override
     public String serialize(Event event) {
         StoreEvent storeEvent = (StoreEvent) event;
-        return storeEvent.ts.getTime() + "\t"
+        return storeEvent.ts + "\t"
                 + storeEvent.source + "\t"
                 + storeEvent.uuid + "\t"
                 + storeEvent.md5 + "\n";
