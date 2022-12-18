@@ -1,26 +1,22 @@
 package es.pentagono.stores;
 
-import es.pentagono.*;
+import es.pentagono.InvertedIndex;
+import es.pentagono.InvertedIndexSerializer;
+import es.pentagono.InvertedIndexStore;
+import es.pentagono.InvertedIndexWriter;
 
 public class FSInvertedIndexStore implements InvertedIndexStore {
+
+    private final InvertedIndexWriter writer;
     private final InvertedIndexSerializer serializer;
-    private final EventSerializer eventSerializer;
-    private final InvertedIndexPersister persister;
 
-    public FSInvertedIndexStore(InvertedIndexSerializer invertedIndexSerializer, EventSerializer eventSerializer, InvertedIndexPersister invertedIndexPersister) {
-        this.serializer = invertedIndexSerializer;
-        this.eventSerializer = eventSerializer;
-        this.persister = invertedIndexPersister;
+    public FSInvertedIndexStore(InvertedIndexWriter writer, InvertedIndexSerializer serializer) {
+        this.writer = writer;
+        this.serializer = serializer;
     }
 
     @Override
-    public void store(InvertedIndex invertedIndex) {
-        persister.persistConfig(serializer.serialize(invertedIndex));
-    }
-
-    @Override
-    public void store(Event event) {
-        persister.persistConfig(eventSerializer.serializeConfig(event));
-        persister.persistDatalake(eventSerializer.serializeDatalake(event));
+    public void store(InvertedIndex index) {
+        writer.write(serializer.serialize(index));
     }
 }

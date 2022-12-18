@@ -1,6 +1,5 @@
 package es.pentagono;
 
-public interface InvertedIndexStore {
+public interface InvertedIndexStore extends Store {
     void store(InvertedIndex index);
-    void store(Event event);
 }
