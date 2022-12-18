@@ -1,15 +1,16 @@
 package es.pentagono.readers;
 
-import com.mashape.unirest.http.Unirest;
-import com.mashape.unirest.http.exceptions.UnirestException;
 import es.pentagono.BookReader;
 import es.pentagono.EventParser;
 import es.pentagono.events.DownloadEvent;
 import es.pentagono.parsers.GutenbergDownloadEventParser;
+import org.jsoup.Jsoup;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+
+import static org.jsoup.Connection.Method.GET;
 
 
 public class GutenbergBookReader implements BookReader {
@@ -22,9 +23,10 @@ public class GutenbergBookReader implements BookReader {
 
     private String getBook(String url) {
         try {
-            Unirest.setTimeouts(0, 0);
-            return Unirest.get(url).asString().getBody();
-        } catch (UnirestException e) {
+            return Jsoup.connect(url)
+                    .method(GET)
+                    .execute().body();
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
