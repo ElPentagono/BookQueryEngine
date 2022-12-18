@@ -66,8 +66,10 @@ public class DocumentWordsCommand implements Command {
     }
 
     private boolean applyFilters(Map<String, String> parameters, Appearance appearance) {
-        return filterParameter("from", appearance, parameters.getOrDefault("from", "")) &&
-                filterParameter("to", appearance, parameters.getOrDefault("to", "")) &&
+        if (appearance.metadata.releaseDate == null)
+            return filterParameter("author", appearance, parameters.getOrDefault("author", ""));
+        return filterParameter("from", appearance, parameters.getOrDefault("from", "999999")) &&
+                filterParameter("to", appearance, parameters.getOrDefault("to", "000000")) &&
                 filterParameter("author", appearance, parameters.getOrDefault("author", ""));
     }
 
@@ -102,9 +104,9 @@ public class DocumentWordsCommand implements Command {
 
         Filter NULL = (appearance, value) -> true;
 
-        Filter FROM = (appearance, value) -> Integer.parseInt(appearance.metadata.releaseDate.substring(appearance.metadata.releaseDate.length() - 4)) >= Integer.parseInt(value);
+        Filter FROM = (appearance, value) -> appearance.metadata.releaseDate.getYear() >= Integer.parseInt(value);
 
-        Filter TO = (appearance, value) -> Integer.parseInt(appearance.metadata.releaseDate.substring(appearance.metadata.releaseDate.length() - 4)) <= Integer.parseInt(value);
+        Filter TO = (appearance, value) -> appearance.metadata.releaseDate.getYear() <= Integer.parseInt(value);
 
         Filter AUTHOR = (appearance, value) -> appearance.metadata.author.equals(value);
 

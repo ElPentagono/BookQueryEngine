@@ -4,6 +4,7 @@ import es.pentagono.Metadata;
 import es.pentagono.MetadataManager;
 
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,7 +51,8 @@ public class SQLMetadataManager implements MetadataManager {
                     rs.getString("title"),
                     rs.getString("author"),
                     rs.getString("language"),
-                    rs.getString("releaseDate"))
+                    (rs.getString("releaseDate") == null) ? null
+                        : LocalDate.parse(rs.getString("releaseDate")))
             );
         }
         return result;
