@@ -4,6 +4,7 @@ import es.pentagono.Metadata;
 import es.pentagono.MetadataLoader;
 
 import java.sql.*;
+import java.time.LocalDate;
 
 public class SQLMetadataLoader implements MetadataLoader {
 
@@ -30,6 +31,8 @@ public class SQLMetadataLoader implements MetadataLoader {
         return new Metadata(query.getString("title"),
                 query.getString("author"),
                 query.getString("language"),
-                query.getString("releaseDate"));
+                (query.getString("releaseDate") == null) ? null
+                    : LocalDate.parse(query.getString("releaseDate"))
+        );
     }
 }
