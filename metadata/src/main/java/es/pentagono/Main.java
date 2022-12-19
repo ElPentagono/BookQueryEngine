@@ -1,9 +1,14 @@
 package es.pentagono;
 
 import es.pentagono.deserializer.GsonMetadataDeserializer;
+import es.pentagono.events.StoreEvent;
+import es.pentagono.persisters.FSEventPersister;
+import es.pentagono.writers.SQLExtendedExtendedMetadataWriter;
 import es.pentagono.readers.FSMetadataReader;
-import es.pentagono.serializers.SQLMetadataSerializer;
-import es.pentagono.stores.SQLMetadataStore;
+import es.pentagono.serializers.SQLExtendedMetadataSerializer;
+import es.pentagono.serializers.TsvEventSerializer;
+import es.pentagono.stores.EventStore;
+import es.pentagono.stores.ExtendedMetadataStore;
 
 import java.io.File;
 import java.io.IOException;
@@ -11,29 +16,23 @@ import java.util.Arrays;
 
 public class Main {
     public static void main(String[] args) throws IOException {
-        SQLMetadataSerializer sqlMetadataSerializer = new SQLMetadataSerializer();
-        GsonMetadataDeserializer deserializer = new GsonMetadataDeserializer();
-        Store store = new SQLMetadataStore();
-        File file = new File("/app/datalake" + "/documents"); // System.getenv("DATALAKE") + "/documents"
+        FSMetadataReader reader = new FSMetadataReader(new GsonMetadataDeserializer());
+        File file = new File(Configuration.getProperty("datalake") + "/documents");
         while (!file.exists()) {}
-        Arrays.stream(file.listFiles()).forEach(filename -> {
-            Metadata metadata = new FSMetadataReader(deserializer).read(filename.getName());
-            store.store(new Document(filename.getName(), sqlMetadataSerializer.serialize(
-                    new ExtendedMetadata(
-                            metadata,
-                            filename.getName()
-                    )
-            )));
-        });
-
-        FileWatcher.of(file).add((String documentId) -> {
-            Metadata metadata = new FSMetadataReader(deserializer).read(documentId);
-            store.store(new Document(documentId, sqlMetadataSerializer.serialize(new ExtendedMetadata(
-                    metadata,
-                    documentId
-                    )
-            )));
+        Arrays.stream(file.listFiles())
+                .map(File::getName)
+                .forEach(uuid -> {
+                    ExtendedMetadataStore.create(new SQLExtendedExtendedMetadataWriter(), new SQLExtendedMetadataSerializer())
+                                    .store(new ExtendedMetadata(uuid, reader.read(uuid)));
+                    EventStore.create(new FSEventPersister(), new TsvEventSerializer())
+                                    .store(new StoreEvent(System.currentTimeMillis(), uuid));
+                        }
+                );
+        FileWatcher.of(file).add((String uuid) -> {
+            ExtendedMetadataStore.create(new SQLExtendedExtendedMetadataWriter(), new SQLExtendedMetadataSerializer())
+                    .store(new ExtendedMetadata(uuid, reader.read(uuid)));
+            EventStore.create(new FSEventPersister(), new TsvEventSerializer())
+                    .store(new StoreEvent(System.currentTimeMillis(), uuid));
         }).start();
-
     }
 }

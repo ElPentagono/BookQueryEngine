@@ -1,7 +1,5 @@
 package es.pentagono;
 
-public interface MetadataSerializer {
-    String serialize(Metadata metadata);
-
+public interface ExtendedMetadataSerializer extends Serializer {
     String serialize(ExtendedMetadata extendedMetadata);
 }

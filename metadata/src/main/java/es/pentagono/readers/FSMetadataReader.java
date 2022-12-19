@@ -1,14 +1,16 @@
 package es.pentagono.readers;
 
+import es.pentagono.Configuration;
 import es.pentagono.Metadata;
 import es.pentagono.MetadataDeserializer;
 import es.pentagono.MetadataReader;
 
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.nio.file.Path;
 
 public class FSMetadataReader implements MetadataReader {
+
     MetadataDeserializer deserializer;
 
     public FSMetadataReader(MetadataDeserializer deserializer) {
@@ -16,15 +18,15 @@ public class FSMetadataReader implements MetadataReader {
     }
 
     @Override
-    public Metadata read(String documentId) {
+    public Metadata read(String uuid) {
         try {
-            return deserializer.deserialize(new String(Files.readAllBytes(Paths.get(documentPath(documentId)))));
+            return deserializer.deserialize(Files.readString(getPath(uuid)));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private String documentPath(String documentId) {
-        return "/app/datalake" + "/documents/" + documentId + "/metadata.json"; // System.getenv("DATALAKE") + "/documents/" + documentId + "/metadata.json";
+    private Path getPath(String uuid) {
+        return Path.of(Configuration.getProperty("datalake") + "/documents/" + uuid + "/metadata.json");
     }
 }

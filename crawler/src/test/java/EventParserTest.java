@@ -32,7 +32,6 @@ public class EventParserTest {
         BufferedReader reader = getBufferedReader(is);
         DownloadEvent result = (DownloadEvent) eventParser.parse("123", reader.lines().collect(Collectors.joining("\n")));
         assertThat(result.content).isEqualTo(getExpectedContent());
-        assertThat(result.metadata).isEqualTo(getExpectedMetadata());
         assertThat(result.source).isEqualTo("123");
     }
 

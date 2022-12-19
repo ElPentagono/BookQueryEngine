@@ -2,6 +2,8 @@ package es.pentagono;
 
 import es.pentagono.builders.InvertedIndexBuilder;
 import es.pentagono.events.InvertedIndexEvent;
+import es.pentagono.stores.EventStore;
+import es.pentagono.stores.InvertedIndexStore;
 
 public class DocumentProcessor {
 

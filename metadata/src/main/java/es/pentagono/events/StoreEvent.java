@@ -2,16 +2,13 @@ package es.pentagono.events;
 
 import es.pentagono.Event;
 
-import java.sql.Timestamp;
-
 public class StoreEvent implements Event {
 
-    public final Timestamp ts;
+    public final long ts;
     public final String filename;
 
-    public StoreEvent(String filename) {
+    public StoreEvent(long ts, String filename) {
+        this.ts = ts;
         this.filename = filename;
-        this.ts = new Timestamp(System.currentTimeMillis());
     }
-
 }

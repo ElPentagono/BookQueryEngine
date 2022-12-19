@@ -8,22 +8,20 @@ import java.util.stream.Stream;
 
 public class ExtendedMetadata {
 
+    public final String uuid;
     public final Metadata metadata;
-    private final int numberOfWords;
+    public final int wordsCount;
 
-    public ExtendedMetadata(Metadata metadata, String documentId) {
+    public ExtendedMetadata(String uuid, Metadata metadata) {
+        this.uuid = uuid;
         this.metadata = metadata;
-        this.numberOfWords = calculateNumberOfWords(documentId);
+        this.wordsCount = countWords(uuid);
     }
 
-    public int numberOfWords() {
-        return numberOfWords;
-    }
-
-    private int calculateNumberOfWords(String documentId) {
+    private int countWords(String uuid) {
         try {
             Pattern pattern = Pattern.compile("\\b(\\w+|\\d+)\\b");
-            return (int) Files.lines(documentPath(documentId))
+            return (int) Files.lines(getPath(uuid))
                     .flatMap(line -> Stream.of(line.split(" ")))
                     .filter(word ->  pattern.matcher(word).matches())
                     .count();
@@ -32,7 +30,7 @@ public class ExtendedMetadata {
         }
     }
 
-    private Path documentPath(String documentId) {
-        return Path.of("/app/datalake" + "/documents/" + documentId + "/content.txt");
+    private Path getPath(String uuid) {
+        return Path.of("/app/datalake" + "/documents/" + uuid + "/content.txt");
     }
 }
