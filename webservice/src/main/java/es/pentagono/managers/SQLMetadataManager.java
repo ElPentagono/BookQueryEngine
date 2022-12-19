@@ -1,5 +1,6 @@
 package es.pentagono.managers;
 
+import es.pentagono.Configuration;
 import es.pentagono.Metadata;
 import es.pentagono.MetadataManager;
 
@@ -18,7 +19,7 @@ public class SQLMetadataManager implements MetadataManager {
         String sql = "SELECT COUNT(*) FROM metadata";
         try {
             Class.forName("org.sqlite.JDBC");
-            Connection conn = DriverManager.getConnection("jdbc:sqlite:/appM/metadataDatamart/content.db"); // System.getenv("URL")
+            Connection conn = DriverManager.getConnection(Configuration.getProperty("database"));
             Statement stmt = conn.createStatement();
             return Integer.parseInt(stmt.executeQuery(sql).getString("COUNT(*)"));
         } catch (Exception e) {
@@ -30,10 +31,9 @@ public class SQLMetadataManager implements MetadataManager {
     @Override
     public List<Metadata> metadata() {
         String sql = "SELECT * FROM metadata";
-
         try {
             Class.forName("org.sqlite.JDBC");
-            Connection conn = DriverManager.getConnection("jdbc:sqlite:/appM/metadataDatamart/content.db"); // System.getenv("URL")
+            Connection conn = DriverManager.getConnection(Configuration.getProperty("database"));
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(sql);
             return parseToList(rs);
@@ -45,7 +45,6 @@ public class SQLMetadataManager implements MetadataManager {
 
     private static List<Metadata> parseToList(ResultSet rs) throws SQLException {
         List<Metadata> result = new ArrayList<>();
-
         while (rs.next()) {
             result.add(new Metadata(
                     rs.getString("title"),

@@ -39,11 +39,11 @@ public class StatsTypeCommand implements Command {
     }
 
     private static int countAppearancesDatalake() {
-        return new File("/app/datalake" + "/documents").list().length; // System.getenv("DATALAKE") + "/documents"
+        return new File(Configuration.getProperty("datalake") + "/documents").list().length;
     }
 
     private String getEvents() throws IOException {
-        return Files.lines(Path.of("/app/datalake" + "/events/updates.log"))// System.getenv("DATALAKE") + "/events/updates.log"
+        return Files.lines(Path.of(Configuration.getProperty("datalake") + "/events/crawler.log"))
                 .skip(1)
                 .map(l -> new StoreEvent(l.split("\t")[0], l.split("\t")[1], l.split("\t")[2], l.split("\t")[3]))
                 .map(eventserializer::serialize)

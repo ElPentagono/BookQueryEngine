@@ -1,5 +1,6 @@
 package es.pentagono.loaders;
 
+import es.pentagono.Configuration;
 import es.pentagono.Metadata;
 import es.pentagono.MetadataLoader;
 
@@ -8,7 +9,7 @@ import java.time.LocalDate;
 
 public class SQLMetadataLoader implements MetadataLoader {
 
-    private final static String url = "jdbc:sqlite:/appM/metadataDatamart/content.db";// System.getenv("URL");
+    private final static String url = Configuration.getProperty("database");
 
     public SQLMetadataLoader() {
     }
