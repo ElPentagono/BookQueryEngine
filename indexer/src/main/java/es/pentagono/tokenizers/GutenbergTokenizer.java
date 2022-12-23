@@ -3,7 +3,6 @@ package es.pentagono.tokenizers;
 import es.pentagono.Tokenizer;
 
 import java.io.BufferedReader;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -24,8 +23,7 @@ public class GutenbergTokenizer implements Tokenizer {
 
     private static List<String> loadStopwords() {
         try {
-            InputStream in = GutenbergTokenizer.class.getClassLoader().getResourceAsStream("stopwords.txt");
-            return new BufferedReader(new InputStreamReader(in))
+            return new BufferedReader(new InputStreamReader(GutenbergTokenizer.class.getClassLoader().getResourceAsStream("stopwords.txt")))
                     .lines()
                     .collect(Collectors.toList());
         } catch (Exception e) {

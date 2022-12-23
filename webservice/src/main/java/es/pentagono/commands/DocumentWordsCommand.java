@@ -61,7 +61,7 @@ public class DocumentWordsCommand implements Command {
                 .map(DocumentWordsCommand::toPath)
                 .map(DocumentWordsCommand::getLines)
                 .flatMap(List::stream)
-                .map(s -> new Appearance(s.split("\t")[0], getMetadata(s.split("\t")[0]), s.split("\t")[2], s.split("\t")[1]))
+                .map(s -> new Appearance(s.split("\t")[0], metadata(s.split("\t")[0]), s.split("\t")[2], s.split("\t")[1]))
                 .filter(appearance -> applyFilters(parameters, appearance));
     }
 
@@ -77,12 +77,12 @@ public class DocumentWordsCommand implements Command {
         return filters.get(parameter).filter(appearance, value);
     }
 
-    private Metadata getMetadata(String uuid) {
+    private Metadata metadata(String uuid) {
         return loader.load(uuid);
     }
 
     private static Path toPath(String word) {
-        return Path.of("/appI" + "/invertedIndexDatamart/index/" + word.charAt(0) + "/" + word.substring(0, 2) + "/" + word); // System.getenv("DATAMART") + "/invertedIndex/index/"
+        return Path.of(Configuration.getProperty("indexDatamart") + "/index/" + word.charAt(0) + "/" + word.substring(0, 2) + "/" + word);
     }
 
     private static List<String> getLines(Path path) {

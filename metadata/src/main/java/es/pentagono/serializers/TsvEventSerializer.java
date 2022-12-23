@@ -5,15 +5,10 @@ import es.pentagono.EventSerializer;
 import es.pentagono.events.StoreEvent;
 
 public class TsvEventSerializer implements EventSerializer {
-    @Override
-    public String serializeConfig(Event event) {
-        StoreEvent storeEvent = (StoreEvent) event;
-        return storeEvent.filename;
-    }
 
     @Override
-    public String serializeDatalake(Event event) {
+    public String serialize(Event event) {
         StoreEvent storeEvent = (StoreEvent) event;
-        return storeEvent.ts + "\t" + storeEvent.filename + "METADATA DATAMART" + "\t" + "DOCUMENT ADDED" + "\n";
+        return storeEvent.ts + "\t" + storeEvent.filename + "\n";
     }
 }

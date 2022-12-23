@@ -25,7 +25,8 @@ public class GutenbergBookReader implements BookReader {
         try {
             return Jsoup.connect(url)
                     .method(GET)
-                    .execute().body();
+                    .execute()
+                    .body();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

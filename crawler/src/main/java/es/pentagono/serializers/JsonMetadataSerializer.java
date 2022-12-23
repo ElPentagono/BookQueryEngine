@@ -9,7 +9,6 @@ import java.time.Instant;
 import java.time.LocalDate;
 
 public class JsonMetadataSerializer implements MetadataSerializer {
-
     @Override
     public String serialize(Metadata metadata) {
         Gson gson = new GsonBuilder().registerTypeAdapter(LocalDate.class,

@@ -8,18 +8,18 @@ import java.util.List;
 
 import static java.nio.file.StandardWatchEventKinds.ENTRY_MODIFY;
 
-public class FileSystemEntityWatcher {
+public class FSEntityWatcher {
 
     private static final List<Listener> listeners = new ArrayList<>();
     private static WatchService watchService;
     private static WatchKey key;
     private final File file;
 
-    public static FileSystemEntityWatcher of(File file) {
-        return new FileSystemEntityWatcher(file);
+    public static FSEntityWatcher of(File file) {
+        return new FSEntityWatcher(file);
     }
 
-    private FileSystemEntityWatcher(File file) {
+    private FSEntityWatcher(File file) {
         try {
             this.file = file;
             watchService = FileSystems.getDefault().newWatchService();
@@ -29,7 +29,7 @@ public class FileSystemEntityWatcher {
         }
     }
 
-    public FileSystemEntityWatcher addListener(Listener listener) {
+    public FSEntityWatcher addListener(Listener listener) {
         listeners.add(listener);
         return this;
     }

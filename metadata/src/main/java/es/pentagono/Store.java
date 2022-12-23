@@ -1,5 +1,5 @@
 package es.pentagono;
 
 public interface Store {
-    void store(Document document);
+    void store(ExtendedMetadata metadata);
 }

@@ -15,7 +15,8 @@ import java.util.Iterator;
 public class DownloadTask implements Task {
 
     private Source source;
-    private DocumentStore store;
+    private DocumentStore documentStore;
+    private EventStore eventStore;
 
 
     public DownloadTask from(Source source) {
@@ -23,8 +24,9 @@ public class DownloadTask implements Task {
         return this;
     }
 
-    public DownloadTask into(DocumentStore store) {
-        this.store = store;
+    public DownloadTask into(DocumentStore documentStore, EventStore eventStore) {
+        this.documentStore = documentStore;
+        this.eventStore = eventStore;
         return this;
     }
 
@@ -35,10 +37,10 @@ public class DownloadTask implements Task {
             while (events.hasNext()) {
                 DownloadEvent event = (DownloadEvent) events.next();
                 if (isStored(event.source, Md5(event.content))) continue;
-                store.store(new StoreEvent(
+                eventStore.store(new StoreEvent(
                         event.ts,
                         event.source,
-                        store.store(new Document(event.source, event.metadata, event.content)),
+                        documentStore.store(new Document(event.source, event.metadata, event.content)),
                         Md5(event.content))
                 );
             }
@@ -48,8 +50,8 @@ public class DownloadTask implements Task {
     }
 
     private boolean isStored(String source, String md5) throws IOException {
-        if (!Files.exists(Paths.get("/app/datalake/crawler.config"))) return false; // System.getenv("DATALAKE") + "/events/updates.log"
-        return Files.lines(Paths.get("/app/datalake/crawler.config"))// System.getenv("DATALAKE") + "/events/updates.log"
+        if (!Files.exists(Paths.get(Configuration.getProperty("datalake") + "/events/crawler.log"))) return false;
+        return Files.lines(Paths.get(Configuration.getProperty("datalake") + "/events/crawler.log"))
                 .map(line -> line.split("\t"))
                 .anyMatch(row -> row[0].equals(source) && row[2].equals(md5));
     }

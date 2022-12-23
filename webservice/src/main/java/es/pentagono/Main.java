@@ -18,8 +18,8 @@ public class Main {
         webService.add("/stats/:type", new StatsTypeCommand(
                 new GsonEventSerializer(),
                 new GsonMetadataSerializer(),
-        new SQLMetadataManager()));
-
+                new SQLMetadataManager()
+        ));
         webService.start();
     }
 }
