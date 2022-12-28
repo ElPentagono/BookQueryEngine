@@ -18,6 +18,7 @@ public class GutenbergTokenizer implements Tokenizer {
         String cleanContent = content.replaceAll("[\\p{Punct}[0-9]+_\\-—\t\n\\x0B\f\n\r‘’“”]", " ");
         return processDocument(Collections.list(new StringTokenizer(cleanContent, " ")).stream()
                 .map(token -> (String) token)
+                .filter(word -> word.length() >= 2)
                 .collect(Collectors.toList()));
     }
 

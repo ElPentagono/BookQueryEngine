@@ -3,27 +3,27 @@ services:
   crawler:
     build: /crawler
     volumes:
-      - datalake:/app
+      - app:/app
   indexer:
     build: /indexer
     volumes:
-      - datalake:/app
-      - invertedIndexDatamart:/appI
+      - app:/app
+      - invertedIndexDatamart:/invertedIndexDatamart
   metadata:
     build: /metadata
     volumes:
-      - datalake:/app
-      - metadataDatamart:/appM
+      - app:/app
+      - metadataDatamart:/metadataDatamart
   webservice:
     build: /webservice
     volumes:
-      - datalake:/app
-      - invertedIndexDatamart:/appI:ro
-      - metadataDatamart:/appM:ro
+      - app:/app
+      - invertedIndexDatamart:/invertedIndexDatamart:ro
+      - metadataDatamart:/metadataDatamart:ro
     ports:
       - "8080:8080"
 volumes:
-  datalake:
+  app:
     external: true
   invertedIndexDatamart:
     external: true
