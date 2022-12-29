@@ -50,7 +50,7 @@ public class SQLMetadataManager implements MetadataManager {
                     rs.getString("title"),
                     rs.getString("author"),
                     rs.getString("language"),
-                    (rs.getString("releaseDate") == null) ? null
+                    (rs.getString("releaseDate").equals("NULL")) ? null
                         : LocalDate.parse(rs.getString("releaseDate")))
             );
         }

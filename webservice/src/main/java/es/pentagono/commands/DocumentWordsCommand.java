@@ -57,7 +57,7 @@ public class DocumentWordsCommand implements Command {
     }
 
     private Stream<Appearance> getAppearanceStream(Map<String, String> parameters) {
-        return Arrays.stream(parameters.get(":words").split("\\+")).parallel()
+        return Arrays.stream(parameters.get(":words").split("\\+"))
                 .map(DocumentWordsCommand::toPath)
                 .map(DocumentWordsCommand::getLines)
                 .flatMap(List::stream)
@@ -66,10 +66,22 @@ public class DocumentWordsCommand implements Command {
     }
 
     private boolean applyFilters(Map<String, String> parameters, Appearance appearance) {
-        if (appearance.metadata.releaseDate == null)
-            return filterParameter("author", appearance, parameters.getOrDefault("author", ""));
-        return filterParameter("from", appearance, parameters.getOrDefault("from", "999999")) &&
-                filterParameter("to", appearance, parameters.getOrDefault("to", "000000")) &&
+        System.out.println(appearance.document);
+        System.out.println(appearance.position);
+        System.out.println(appearance.word);
+        System.out.println(appearance.metadata.author);
+        System.out.println(appearance.metadata.releaseDate);
+        System.out.println(appearance.metadata.title);
+        System.out.println(appearance.metadata.language);
+        System.out.println(parameters.get("from"));
+        System.out.println(parameters.get("to"));
+        System.out.println(parameters.get("author"));
+        System.out.println(filterParameter("from", appearance, parameters.getOrDefault("from", "9999")) &&
+                filterParameter("to", appearance, parameters.getOrDefault("to", "0000")) &&
+                filterParameter("author", appearance, parameters.getOrDefault("author", "")));
+        System.out.println("-------------------");
+        return filterParameter("from", appearance, parameters.getOrDefault("from", "9999")) &&
+                filterParameter("to", appearance, parameters.getOrDefault("to", "0000")) &&
                 filterParameter("author", appearance, parameters.getOrDefault("author", ""));
     }
 
