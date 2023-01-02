@@ -1,0 +1,13 @@
+version: "3"
+
+services:
+  webservice:
+    build: .
+    volumes:
+      - app:/app
+    ports:
+      - "5000:8080" # Change first port for whichever you want
+
+volumes:
+  app:
+    external: true
