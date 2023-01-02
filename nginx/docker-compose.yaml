@@ -1,0 +1,25 @@
+version: '3'
+services:
+  app:
+    build: ../webservice
+    container_name: webservice1
+    ports:
+      - "5000:5000"
+    networks:
+      - nginx_network
+    volumes:
+      - app:/app
+
+  nginx:
+    build:
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+
+volumes:
+  app:
+    external: true
+
+networks:
+  nginx_network:
+    driver: bridge

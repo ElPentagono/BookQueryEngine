@@ -8,21 +8,16 @@ services:
     build: /indexer
     volumes:
       - app:/app
-      - invertedIndexDatamart:/invertedIndexDatamart
   metadata:
     build: /metadata
     volumes:
       - app:/app
-      - metadataDatamart:/metadataDatamart
   webservice:
     build: /webservice
     volumes:
       - app:/app
-      - invertedIndexDatamart:/invertedIndexDatamart:ro
-      - metadataDatamart:/metadataDatamart:ro
     ports:
       - "8080:8080"
 volumes:
   app:
-  invertedIndexDatamart:
-  metadataDatamart:
+    external: true
