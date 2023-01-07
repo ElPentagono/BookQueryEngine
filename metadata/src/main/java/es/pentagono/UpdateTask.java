@@ -12,10 +12,10 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Arrays;
 
 public class UpdateTask implements Task{
+    private static final Path EVENTS = Path.of(Configuration.getProperty("datalake") + "/events/metadata.log");
     public final File file;
     public final MetadataReader reader;
 
@@ -40,9 +40,10 @@ public class UpdateTask implements Task{
             throw new RuntimeException(e);
         }
     }
+
     private static boolean isProcessed(String uuid) throws IOException {
-        if (!Files.exists(Path.of(Configuration.getProperty("datalake") + "/events/metadata.log"))) return false;
-        return Files.readAllLines(Paths.get(Configuration.getProperty("datalake") + "/events/metadata.log")).stream()
+        if (!Files.exists(EVENTS)) return false;
+        return Files.readAllLines(EVENTS).stream()
                 .anyMatch(s -> s.contains(uuid));
     }
 }

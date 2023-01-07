@@ -7,7 +7,7 @@ import java.io.File;
 import java.util.Timer;
 
 public class Main {
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) {
         FSMetadataReader reader = new FSMetadataReader(new GsonMetadataDeserializer());
         File file = new File(Configuration.getProperty("datalake") + "/documents");
         while (!file.exists()) {}
