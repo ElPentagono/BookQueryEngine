@@ -10,7 +10,7 @@ import es.pentagono.serializers.TsvInvertedIndexSerializer;
 import es.pentagono.serializers.TsvStoreEventSerializer;
 import es.pentagono.tokenizers.GutenbergTokenizer;
 
-import java.io.File;
+import java.util.Timer;
 
 public class Main {
     public static void main(String[] args) {
@@ -19,11 +19,11 @@ public class Main {
                 new InvertedIndexBuilder(new GutenbergTokenizer()),
                 InvertedIndexStore.create(new FSInvertedIndexWriter(), new TsvInvertedIndexSerializer()),
                 EventStore.create(new FSEventPersister(), new TsvStoreEventSerializer())
-                );
-        new Updater(docProcessor).update();
-        FSEntityWatcher
-                .of(new File(Configuration.getProperty("datalake") + "/documents"))
-                .addListener(docProcessor::process)
-                .watch();
+        );
+
+        Scheduler scheduler = new Scheduler(new Timer());
+        scheduler.add(new UpdateTask(docProcessor));
+        scheduler.start();
+
     }
 }

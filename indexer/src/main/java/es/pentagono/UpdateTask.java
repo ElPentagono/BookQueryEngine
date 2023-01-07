@@ -8,16 +8,17 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class Updater {
+public class UpdateTask implements Task {
     private static final String DOCUMENTS = Configuration.getProperty("datalake") + "/documents";
-    private static final String EVENTS = Configuration.getProperty("datalake") + "/events/indexer.log";
+    private static final String EVENTS = Configuration.getProperty("datalake") + "/events/invertedIndex.log";
     private final DocumentProcessor processor;
 
-    public Updater(DocumentProcessor processor) {
+    public UpdateTask(DocumentProcessor processor) {
         this.processor = processor;
     }
 
-    public void update() {
+    @Override
+    public void execute() {
         if (!Files.exists(Path.of(DOCUMENTS))) return;
         for (String uuid : unprocessedDocuments()) processor.process(uuid);
     }

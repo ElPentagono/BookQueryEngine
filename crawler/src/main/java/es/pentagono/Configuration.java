@@ -9,7 +9,7 @@ public class Configuration {
 
     private static void loadConfig() {
         config = new Properties();
-        try (InputStream in = new FileInputStream("/app/crawler.properties")) {
+        try (InputStream in = new FileInputStream("crawler/crawler.properties")) {
             config.load(in);
         } catch (IOException e) {
             e.printStackTrace();
@@ -27,7 +27,7 @@ public class Configuration {
     }
 
     public static void saveConfig() {
-        try (OutputStream out = new FileOutputStream("/app/crawler.properties")) {
+        try (OutputStream out = new FileOutputStream("crawler/crawler.properties")) {
             config.store(out, null);
         } catch (Exception e) {
             e.printStackTrace();

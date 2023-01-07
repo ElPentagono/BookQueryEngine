@@ -16,7 +16,7 @@ public class SQLMetadataLoader implements MetadataLoader {
 
     @Override
     public Metadata load(String uuid) {
-        String sql = "SELECT * FROM metadata WHERE uuid = " + "'" + uuid + "'";
+        String sql = "SELECT * FROM metadata WHERE uuid = " + "'\"" + uuid + "\"'";
         try {
             Class.forName("org.sqlite.JDBC");
             Connection conn = DriverManager.getConnection(url,"","");
